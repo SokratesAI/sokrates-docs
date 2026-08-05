@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Secret scan
-        # gitleaks/gitleaks-action@v2 requires a paid GITLEAKS_LICENSE for org repos —
+        # gitleaks/gitleaks-action@v2 requires a paid GITLEAKS_LICENSE for org repos --
         # the underlying gitleaks CLI is free/OSS, run that directly instead.
         run: |
           curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
@@ -27,9 +27,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm install
+      - run: npm ci
+      - run: npm run typecheck
       - run: npm run build
-      - run: npm test
 
   build-push:
     if: github.ref == 'refs/heads/main'
@@ -66,17 +66,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   # Commits the new image digest to this service's paired config repo, which
-  # ArgoCD's SCM Provider generator auto-deploys — no platform-config PR, no
-  # manual step. Authenticates as a GitHub App installation, scoped by this
-  # step to ONLY this repo's own -config repo (never broader). ORG_APP_ID/
-  # ORG_APP_PRIVATE_KEY are repo-scoped Actions secrets that this Composition
-  # itself provisions on every source repo it creates (see the
-  # source-actions-secret-* resources in this Composition) — not org-level
-  # secrets, which GitHub gates behind a paid plan for private repos. See
-  # Platform-Product-Catalog's _context.md in the vault for why a GitHub App
-  # instead of a PAT. Byte-identical across every service template instance —
-  # nothing here is per-service except GitHub's own repository context, so
-  # nothing needed substituting at repo-creation time.
+  # ArgoCD's SCM Provider generator auto-deploys -- no platform-config PR, no
+  # manual step. Same pattern as every other Platform Product Catalog service,
+  # see agora-claude-bridge/.github/workflows/build.yaml for the full reasoning.
   update-manifest:
     needs: build-push
     runs-on: ubuntu-latest
