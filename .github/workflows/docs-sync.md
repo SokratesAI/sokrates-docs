@@ -9,6 +9,12 @@ permissions:
   pull-requests: read
 
 engine: gemini
+# gh-aw's default gemini model (gemini-2.5-flash-lite) is deprecated for
+# new API keys and fails over to a Pro-tier model, which then hits daily
+# quota exhaustion on this key -- it's shared with Agora's live traffic
+# (see vault Projects/Sokrates/Projects/Sokrates-Docs/_context.md). Pin
+# explicitly to a current free-tier Flash model to avoid both problems.
+model: gemini-3-flash
 
 tools:
   github:
