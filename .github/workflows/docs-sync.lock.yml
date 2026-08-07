@@ -1,5 +1,5 @@
-# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"245ab918541be27254a759cdbbb4be0cfc8c6c9f779728d0b9a12977b7e98bef","body_hash":"06cca2a7ad610dc04b1336cde737dcb44839e7d02343f6d45800437a2e6e0c5d","compiler_version":"v0.84.3","strict":true,"agent_id":"gemini","agent_model":"gemini-flash-latest","engine_versions":{"gemini":"0.39.1"}}
-# gh-aw-manifest: {"version":1,"secrets":["COPILOT_GITHUB_TOKEN","GEMINI_API_KEY","GH_AW_CI_TRIGGER_TOKEN","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN"],"actions":[{"repo":"actions/cache/restore","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/cache/save","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/download-artifact","sha":"3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c","version":"v8.0.1"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-node","sha":"820762786026740c76f36085b0efc47a31fe5020","version":"v7.0.0"},{"repo":"actions/upload-artifact","sha":"043fb46d1a93c77aae656e7c1c64a875d1fc6a0a","version":"v7.0.1"},{"repo":"github/gh-aw-actions/setup","sha":"c863074b673419603d146aab585e2986ef08deec","version":"v0.84.3"}],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.27.43","digest":"sha256:04e2d1987a565000a8f114b89d806ae7a3864dd4f944be65275b28c93d8690e6","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.27.43@sha256:04e2d1987a565000a8f114b89d806ae7a3864dd4f944be65275b28c93d8690e6"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.27.43","digest":"sha256:d85f57975af5ea23af4996e41ed73fbc8f5b4a47402472bfe82e508f352cb0c1","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.27.43@sha256:d85f57975af5ea23af4996e41ed73fbc8f5b4a47402472bfe82e508f352cb0c1"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.27.43","digest":"sha256:26be5e0b8c8f4c41c8a59126b29bb5d80b07253597472ded2a16bdd75abcbf9d","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.27.43@sha256:26be5e0b8c8f4c41c8a59126b29bb5d80b07253597472ded2a16bdd75abcbf9d"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.4.7","digest":"sha256:7545220a9aca134b71e51193ee0eaf4c50756ebf8fbd25a63ae7556e62815c00","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.4.7@sha256:7545220a9aca134b71e51193ee0eaf4c50756ebf8fbd25a63ae7556e62815c00"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:0d9f1fb5fd6610c0ac1f5194a38e45a8a1e81f8a390d5142d8e4e6f26a4b3196","pinned_image":"ghcr.io/github/gh-aw-node@sha256:0d9f1fb5fd6610c0ac1f5194a38e45a8a1e81f8a390d5142d8e4e6f26a4b3196"},{"image":"ghcr.io/github/github-mcp-server:v1.8.0","digest":"sha256:d5a18c04b92714c309eb46a2305087e91a4dbd80420f6e462656699f95093520","pinned_image":"ghcr.io/github/github-mcp-server:v1.8.0@sha256:d5a18c04b92714c309eb46a2305087e91a4dbd80420f6e462656699f95093520"}]}
+# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"38b37b5c7479a13fd073fb6fe33876ea0bdf8acbe15c93a1b0dd512104cca2bc","body_hash":"e6f4a65cf5cf486083aa31de9ef6ab8a857b32abf33e65d61fe2273244de7316","compiler_version":"v0.84.3","strict":true,"agent_id":"gemini","agent_model":"gemini-flash-latest","engine_versions":{"gemini":"0.39.1"}}
+# gh-aw-manifest: {"version":1,"secrets":["COPILOT_GITHUB_TOKEN","GEMINI_API_KEY","GH_AW_CI_TRIGGER_TOKEN","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN","ORG_APP_ID","ORG_APP_PRIVATE_KEY"],"actions":[{"repo":"actions/cache/restore","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/cache/save","sha":"55cc8345863c7cc4c66a329aec7e433d2d1c52a9","version":"v6.1.0"},{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/create-github-app-token","sha":"d72941d797fd3113feb6b93fd0dec494b13a2547","version":"v1"},{"repo":"actions/download-artifact","sha":"3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c","version":"v8.0.1"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-node","sha":"820762786026740c76f36085b0efc47a31fe5020","version":"v7.0.0"},{"repo":"actions/upload-artifact","sha":"043fb46d1a93c77aae656e7c1c64a875d1fc6a0a","version":"v7.0.1"},{"repo":"github/gh-aw-actions/setup","sha":"c863074b673419603d146aab585e2986ef08deec","version":"v0.84.3"}],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.27.43","digest":"sha256:04e2d1987a565000a8f114b89d806ae7a3864dd4f944be65275b28c93d8690e6","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.27.43@sha256:04e2d1987a565000a8f114b89d806ae7a3864dd4f944be65275b28c93d8690e6"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.27.43","digest":"sha256:d85f57975af5ea23af4996e41ed73fbc8f5b4a47402472bfe82e508f352cb0c1","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.27.43@sha256:d85f57975af5ea23af4996e41ed73fbc8f5b4a47402472bfe82e508f352cb0c1"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.27.43","digest":"sha256:26be5e0b8c8f4c41c8a59126b29bb5d80b07253597472ded2a16bdd75abcbf9d","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.27.43@sha256:26be5e0b8c8f4c41c8a59126b29bb5d80b07253597472ded2a16bdd75abcbf9d"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.4.7","digest":"sha256:7545220a9aca134b71e51193ee0eaf4c50756ebf8fbd25a63ae7556e62815c00","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.4.7@sha256:7545220a9aca134b71e51193ee0eaf4c50756ebf8fbd25a63ae7556e62815c00"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:0d9f1fb5fd6610c0ac1f5194a38e45a8a1e81f8a390d5142d8e4e6f26a4b3196","pinned_image":"ghcr.io/github/gh-aw-node@sha256:0d9f1fb5fd6610c0ac1f5194a38e45a8a1e81f8a390d5142d8e4e6f26a4b3196"},{"image":"ghcr.io/github/github-mcp-server:v1.8.0","digest":"sha256:d5a18c04b92714c309eb46a2305087e91a4dbd80420f6e462656699f95093520","pinned_image":"ghcr.io/github/github-mcp-server:v1.8.0@sha256:d5a18c04b92714c309eb46a2305087e91a4dbd80420f6e462656699f95093520"}]}
 # This file was automatically generated by gh-aw (v0.84.3). DO NOT EDIT. To debug this workflow, load the skill at https://github.com/github/gh-aw/blob/main/debug.md
 #
 #    ___                   _   _
@@ -31,11 +31,14 @@
 #   - GH_AW_GITHUB_MCP_SERVER_TOKEN
 #   - GH_AW_GITHUB_TOKEN
 #   - GITHUB_TOKEN
+#   - ORG_APP_ID
+#   - ORG_APP_PRIVATE_KEY
 #
 # Custom actions used:
 #   - actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
 #   - actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
 #   - actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+#   - actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
 #   - actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
 #   - actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
 #   - actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0 (source v9)
@@ -483,10 +486,19 @@ jobs:
         env:
           GH_AW_GITHUB_TOKEN: ${{ secrets.GH_AW_GITHUB_TOKEN }}
           GH_AW_GITHUB_MCP_SERVER_TOKEN: ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
+          GH_AW_GITHUB_MIN_INTEGRITY: 'merged'
+          GH_AW_GITHUB_REPOS: '["sokratesai/platform-config","sokratesai/sokrates-cli","sokratesai/operator","sokratesai/sokrates-docs"]'
         with:
           script: |
             const determineAutomaticLockdown = require('${{ runner.temp }}/gh-aw/actions/determine_automatic_lockdown.cjs');
             await determineAutomaticLockdown(github, context, core);
+      - name: Parse integrity filter lists
+        id: parse-guard-vars
+        env:
+          GH_AW_BLOCKED_USERS_VAR: ${{ vars.GH_AW_GITHUB_BLOCKED_USERS || '' }}
+          GH_AW_TRUSTED_USERS_VAR: ${{ vars.GH_AW_GITHUB_TRUSTED_USERS || '' }}
+          GH_AW_APPROVAL_LABELS_VAR: ${{ vars.GH_AW_GITHUB_APPROVAL_LABELS || '' }}
+        run: bash "${RUNNER_TEMP}/gh-aw/actions/parse_guard_list.sh"
       - name: Restore agent config folders from base branch
         if: steps.checkout-pr.outcome == 'success'
         env:
@@ -502,6 +514,14 @@ jobs:
         env:
           GH_AW_SKILL_DIR: ".gemini/skills"
         run: bash "${RUNNER_TEMP}/gh-aw/actions/restore_inline_skills.sh"
+      - id: docs-read-token
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        with:
+          app-id: ${{ secrets.ORG_APP_ID }}
+          owner: SokratesAI
+          private-key: ${{ secrets.ORG_APP_PRIVATE_KEY }}
+          repositories: platform-config,sokrates-cli,operator,sokrates-docs
+
       - name: Download container images
         run: bash "${RUNNER_TEMP}/gh-aw/actions/download_docker_images.sh" ghcr.io/github/gh-aw-firewall/agent:0.27.43@sha256:04e2d1987a565000a8f114b89d806ae7a3864dd4f944be65275b28c93d8690e6 ghcr.io/github/gh-aw-firewall/api-proxy:0.27.43@sha256:d85f57975af5ea23af4996e41ed73fbc8f5b4a47402472bfe82e508f352cb0c1 ghcr.io/github/gh-aw-firewall/squid:0.27.43@sha256:26be5e0b8c8f4c41c8a59126b29bb5d80b07253597472ded2a16bdd75abcbf9d ghcr.io/github/gh-aw-mcpg:v0.4.7@sha256:7545220a9aca134b71e51193ee0eaf4c50756ebf8fbd25a63ae7556e62815c00 ghcr.io/github/gh-aw-node@sha256:0d9f1fb5fd6610c0ac1f5194a38e45a8a1e81f8a390d5142d8e4e6f26a4b3196 ghcr.io/github/github-mcp-server:v1.8.0@sha256:d5a18c04b92714c309eb46a2305087e91a4dbd80420f6e462656699f95093520
       - name: Generate Safe Outputs Config
@@ -654,9 +674,7 @@ jobs:
           GH_AW_SAFE_OUTPUTS_CONFIG_PATH: ${{ steps.set-runtime-paths.outputs.GH_AW_SAFE_OUTPUTS_CONFIG_PATH }}
           GH_AW_SAFE_OUTPUTS_TOOLS_PATH: ${{ steps.set-runtime-paths.outputs.GH_AW_SAFE_OUTPUTS_TOOLS_PATH }}
           GH_AW_SINK_VISIBILITY: ${{ steps.determine-automatic-lockdown.outputs.visibility }}
-          GITHUB_MCP_GUARD_MIN_INTEGRITY: ${{ steps.determine-automatic-lockdown.outputs.min_integrity }}
-          GITHUB_MCP_GUARD_REPOS: ${{ steps.determine-automatic-lockdown.outputs.repos }}
-          GITHUB_MCP_SERVER_TOKEN: ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN || secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_MCP_SERVER_TOKEN: ${{ steps.docs-read-token.outputs.token }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eo pipefail
@@ -681,7 +699,7 @@ jobs:
           export MCP_GATEWAY_DOCKER_COMMAND='docker run -i --rm --network bridge -p 127.0.0.1:'"${MCP_GATEWAY_PORT}"':'"${MCP_GATEWAY_PORT}"' --name awmg-mcpg --add-host host.docker.internal:host-gateway --user '"${MCP_GATEWAY_UID}"':'"${MCP_GATEWAY_GID}"' --group-add '"${DOCKER_SOCK_GID}"' -v '"${DOCKER_SOCK_PATH}"':/var/run/docker.sock -e MCP_GATEWAY_PORT -e MCP_GATEWAY_DOMAIN -e MCP_GATEWAY_API_KEY -e MCP_GATEWAY_PAYLOAD_DIR -e MCP_GATEWAY_PAYLOAD_SIZE_THRESHOLD -e DOCKER_HOST=unix:///var/run/docker.sock -e DEBUG -e MCP_GATEWAY_LOG_DIR -e GH_AW_MCP_LOG_DIR -e GH_AW_SAFE_OUTPUTS -e GH_AW_SAFE_OUTPUTS_CONFIG_PATH -e GH_AW_SAFE_OUTPUTS_TOOLS_PATH -e GH_AW_POLICY_ALLOW_CREATE_PULL_REQUEST -e GH_AW_ASSETS_BRANCH -e GH_AW_ASSETS_MAX_SIZE_KB -e GH_AW_ASSETS_ALLOWED_EXTS -e DEFAULT_BRANCH -e GITHUB_MCP_SERVER_TOKEN -e GITHUB_MCP_GUARD_MIN_INTEGRITY -e GITHUB_MCP_GUARD_REPOS -e GH_AW_SINK_VISIBILITY -e GITHUB_REPOSITORY -e GITHUB_SERVER_URL -e GITHUB_SHA -e GITHUB_WORKSPACE -e GITHUB_TOKEN -e GITHUB_RUN_ID -e GITHUB_RUN_NUMBER -e GITHUB_RUN_ATTEMPT -e GITHUB_JOB -e GITHUB_ACTION -e GITHUB_EVENT_NAME -e GITHUB_EVENT_PATH -e GITHUB_ACTOR -e GITHUB_ACTOR_ID -e GITHUB_TRIGGERING_ACTOR -e GITHUB_WORKFLOW -e GITHUB_WORKFLOW_REF -e GITHUB_WORKFLOW_SHA -e GITHUB_REF -e GITHUB_REF_NAME -e GITHUB_REF_TYPE -e GITHUB_HEAD_REF -e GITHUB_BASE_REF -e RUNNER_TEMP -v /tmp/gh-aw/mcp-payloads:/tmp/gh-aw/mcp-payloads:rw -v /opt:/opt:ro -v /tmp:/tmp:rw -v '"${GITHUB_WORKSPACE}"':'"${GITHUB_WORKSPACE}"':rw -v '"${RUNNER_TEMP}"'/gh-aw/safeoutputs:'"${RUNNER_TEMP}"'/gh-aw/safeoutputs:rw ghcr.io/github/gh-aw-mcpg:v0.4.7'
 
           GH_AW_NODE=$(which node 2>/dev/null || command -v node 2>/dev/null || echo node)
-          cat << GH_AW_MCP_CONFIG_2c6a137e2026065f_EOF | "$GH_AW_NODE" "${RUNNER_TEMP}/gh-aw/actions/start_mcp_gateway.cjs"
+          cat << GH_AW_MCP_CONFIG_61c204a7e3913c47_EOF | "$GH_AW_NODE" "${RUNNER_TEMP}/gh-aw/actions/start_mcp_gateway.cjs"
           {
             "mcpServers": {
               "github": {
@@ -695,8 +713,16 @@ jobs:
                 },
                 "guard-policies": {
                   "allow-only": {
-                    "min-integrity": "$GITHUB_MCP_GUARD_MIN_INTEGRITY",
-                    "repos": "$GITHUB_MCP_GUARD_REPOS"
+                    "approval-labels": ${{ steps.parse-guard-vars.outputs.approval_labels }},
+                    "blocked-users": ${{ steps.parse-guard-vars.outputs.blocked_users }},
+                    "min-integrity": "merged",
+                    "repos": [
+                      "sokratesai/platform-config",
+                      "sokratesai/sokrates-cli",
+                      "sokratesai/operator",
+                      "sokratesai/sokrates-docs"
+                    ],
+                    "trusted-users": ${{ steps.parse-guard-vars.outputs.trusted_users }}
                   }
                 }
               },
@@ -726,7 +752,10 @@ jobs:
                 "guard-policies": {
                   "write-sink": {
                     "accept": [
-                      "*"
+                      "private:sokratesai/platform-config",
+                      "private:sokratesai/sokrates-cli",
+                      "private:sokratesai/operator",
+                      "private:sokratesai/sokrates-docs"
                     ],
                     "sink-visibility": "${GH_AW_SINK_VISIBILITY}"
                   }
@@ -741,7 +770,7 @@ jobs:
               "startupTimeout": 120
             }
           }
-          GH_AW_MCP_CONFIG_2c6a137e2026065f_EOF
+          GH_AW_MCP_CONFIG_61c204a7e3913c47_EOF
       - name: Mount MCP servers as CLIs
         id: mount-mcp-clis
         continue-on-error: true
@@ -854,11 +883,13 @@ jobs:
             const { main } = require('${{ runner.temp }}/gh-aw/actions/redact_secrets.cjs');
             await main();
         env:
-          GH_AW_SECRET_NAMES: 'GEMINI_API_KEY,GH_AW_GITHUB_MCP_SERVER_TOKEN,GH_AW_GITHUB_TOKEN,GITHUB_TOKEN'
+          GH_AW_SECRET_NAMES: 'GEMINI_API_KEY,GH_AW_GITHUB_MCP_SERVER_TOKEN,GH_AW_GITHUB_TOKEN,GITHUB_TOKEN,ORG_APP_ID,ORG_APP_PRIVATE_KEY'
           SECRET_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SECRET_GH_AW_GITHUB_MCP_SERVER_TOKEN: ${{ secrets.GH_AW_GITHUB_MCP_SERVER_TOKEN }}
           SECRET_GH_AW_GITHUB_TOKEN: ${{ secrets.GH_AW_GITHUB_TOKEN }}
           SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SECRET_ORG_APP_ID: ${{ secrets.ORG_APP_ID }}
+          SECRET_ORG_APP_PRIVATE_KEY: ${{ secrets.ORG_APP_PRIVATE_KEY }}
       - name: Append agent step summary
         if: always()
         run: bash "${RUNNER_TEMP}/gh-aw/actions/append_agent_step_summary.sh"
@@ -949,6 +980,8 @@ jobs:
             /tmp/gh-aw/gemini-client-error-*.json
             /tmp/gh-aw/redacted-urls.log
             /tmp/gh-aw/mcp-logs/
+            /tmp/gh-aw/proxy-logs/
+            !/tmp/gh-aw/proxy-logs/proxy-tls/
             /tmp/gh-aw/agent_usage.json
             /tmp/gh-aw/agent-stdio.log
             /tmp/gh-aw/pre-agent-audit.txt

@@ -27,8 +27,37 @@ engine: gemini
 # doesn't) without needing to be updated again.
 model: gemini-flash-latest
 
+# 2026-08-07: closes the gap this workflow itself reported (see
+# docs/reference/docs-sync.md's "Known gaps" section and the first
+# missing-tool report, run 31179199461) -- read-only access to the repos
+# whose source of truth this site's reference section actually describes.
+# Reuses sokrates-ci-deployer (already installed org-wide, contents:write
+# at the App level) rather than provisioning a new credential -- scoped
+# down per-token to just these repos via the `repositories` input, same
+# pattern as build.yaml's update-manifest job uses for its own narrower
+# (single-repo) token.
+pre-agent-steps:
+  - uses: actions/create-github-app-token@v1
+    id: docs-read-token
+    with:
+      app-id: ${{ secrets.ORG_APP_ID }}
+      private-key: ${{ secrets.ORG_APP_PRIVATE_KEY }}
+      owner: SokratesAI
+      repositories: platform-config,sokrates-cli,operator,sokrates-docs
+
 tools:
   github:
+    github-token: ${{ steps.docs-read-token.outputs.token }}
+    allowed-repos:
+      - sokratesai/platform-config
+      - sokratesai/sokrates-cli
+      - sokratesai/operator
+      - sokratesai/sokrates-docs
+    # Only trust merged content from these repos as source of truth --
+    # this workflow verifies reference docs against them, so an open PR
+    # (potentially unreviewed, in the untrusted-content sense) must never
+    # be read as if it were the real current state.
+    min-integrity: merged
     toolsets: [default]
 
 network: defaults
@@ -51,31 +80,44 @@ what's worth teaching, not just fact-checking.
 ## Instructions
 
 1. Read every file under `docs/reference/`.
-2. Check for internal consistency problems you can fix confidently:
+2. Check for internal consistency problems, and verify factual claims
+   against real source of truth where you now have read access to it:
    - Broken internal links (links to `docs/` pages that don't exist).
    - Pages whose content contradicts another reference page.
    - Placeholder/stub pages (e.g. "No reference pages yet") that are
-     stale relative to what the rest of the site now documents elsewhere
-     (for example if a how-to guide references a CLI command or CRD field
-     that has no corresponding reference page yet).
-3. If you find something you can fix directly (broken link, clear
-   contradiction, obviously missing but well-defined stub), make the edit.
-4. If checking a claim properly would require reading the actual source of
-   truth outside this repo — e.g. the CRD schemas in
-   `SokratesAI/platform-config` (`crossplane/*.yaml`), the CLI command
-   definitions in `SokratesAI/sokrates-cli`, or the API surface in
-   `SokratesAI/operator` — do NOT guess or fabricate reference content.
-   Use the `missing-tool` safe output to report that you'd need read
-   access to that repo to verify/update the relevant page, and say
-   specifically which page and which repo.
-5. Open a pull request with whatever fixes you made. If you made no
-   changes, do not open a PR.
+     stale relative to what the rest of the site now documents elsewhere.
+   - **CRD/API claims against their real source**: `docs/reference/
+     github-service.md` describes the `GitHubService` CRD — verify its
+     field table against the live schema at `SokratesAI/platform-config`
+     `crossplane/githubservice-xrd.yaml`, and its "what gets created"
+     section against `crossplane/githubservice-composition.yaml`. You
+     have read access to `SokratesAI/platform-config`,
+     `SokratesAI/sokrates-cli`, and `SokratesAI/operator` via the GitHub
+     tool — use it. Do not guess field names, defaults, or behavior;
+     read the actual file.
+3. If you find something you can fix directly and confidently, make the
+   edit.
+4. If checking a claim properly would require reading a repo you don't
+   have access to, do NOT guess or fabricate reference content. Use the
+   `missing-tool` safe output to report which repo and why, AND add or
+   update an entry under "Known gaps" in `docs/reference/docs-sync.md`
+   (create the file section if missing) so the gap is a durable, readable
+   part of the site's own documentation, not just a one-off Actions log
+   entry. Be specific: name the repo, what you needed from it, and what
+   page depends on it.
+5. If you close a previously-reported gap in a run (e.g. you now have
+   access that was previously missing), remove or check off that entry
+   in `docs/reference/docs-sync.md`'s "Known gaps" section as part of the
+   same PR.
+6. Open a pull request with whatever fixes you made, including any
+   `docs-sync.md` "Known gaps" edits. If you made no changes, do not open
+   a PR.
 
-## Notes for whoever reviews the `missing-tool` reports
+## Notes for whoever reviews `missing-tool` reports or `docs-sync.md`'s
+## Known gaps section
 
-The recurring "I need read access to X" reports from this workflow are the
-signal for when it's worth widening this workflow's GitHub App token scope
-(the `ORG_APP_ID`/`ORG_APP_PRIVATE_KEY` secrets already provisioned on this
-repo by the Platform Product Catalog composition) to include specific
-source repos — deliberately not granted broad org-wide read access
-up front.
+This is the intended trigger for widening this workflow's access
+further, or for scheduling an agent (e.g. a heartbeat persona) to
+implement a missing capability — read `docs/reference/docs-sync.md`
+directly rather than digging through Actions run history; it should be
+the current, durable record of what this system can and can't do yet.
