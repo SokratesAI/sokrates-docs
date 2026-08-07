@@ -12,9 +12,20 @@ engine: gemini
 # gh-aw's default gemini model (gemini-2.5-flash-lite) is deprecated for
 # new API keys and fails over to a Pro-tier model, which then hits daily
 # quota exhaustion on this key -- it's shared with Agora's live traffic
-# (see vault Projects/Sokrates/Projects/Sokrates-Docs/_context.md). Pin
-# explicitly to a current free-tier Flash model to avoid both problems.
-model: gemini-3-flash
+# (see vault Projects/Sokrates/Projects/Sokrates-Docs/_context.md).
+#
+# 2026-08-07: the specific pin used here (gemini-3-flash) turned out not
+# to exist at all -- checked the real model list via the API's own
+# ListModels endpoint (https://generativelanguage.googleapis.com/v1beta/models)
+# rather than guessing again; only `gemini-3-flash-preview` existed under
+# that name, and the stable lineup had already moved past it
+# (gemini-3.5-flash, gemini-3.6-flash). Given this workflow's whole point
+# is low-maintenance self-updating docs, chasing Google's release cadence
+# with a fresh hardcoded pin every time one goes stale defeats the
+# purpose -- use the rolling "latest" alias instead, which stays on the
+# free Flash tier by construction (Pro models require billing; Flash
+# doesn't) without needing to be updated again.
+model: gemini-flash-latest
 
 tools:
   github:
