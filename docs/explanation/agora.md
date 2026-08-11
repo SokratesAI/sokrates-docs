@@ -19,8 +19,10 @@ field-by-field detail, see the [Persona](/reference/agora-persona) and
 ## The three records, and why they are not one
 
 It would be simpler to store a personality, a model and a schedule on one
-"agent" object. Agora splits them because each one changes on a different
-timescale and has a different owner.
+"agent" object. Agora splits them because each of the three is reused
+independently of the other two — one persona speaks in many conversations,
+one conversation can hold several personas, and one persona can be woken
+by several schedules.
 
 A **persona** is *who*: a name, a personality prompt, a model, a set of
 capability grants, and a `sharedMemory` scratchpad that survives across

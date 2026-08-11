@@ -10,9 +10,9 @@ In this tutorial you will build an agent that wakes up on its own every
 morning, reads part of your vault, and writes what it found into a chat
 thread you can scroll back through.
 
-You will do it in three steps, because Agora keeps *who*, *where* and
-*when* in three separate records. By the end you will have made all three
-and watched them fire.
+You will build it out of three records, because Agora keeps *who*, *where*
+and *when* separate. By the end you will have made all three and watched
+them fire.
 
 **What you need**: access to the Agora Studio in a browser. No terminal,
 no YAML, no credentials.
