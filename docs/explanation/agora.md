@@ -60,7 +60,8 @@ runner:
 1. Fetches the contents of every path in `vaultPaths` **fresh, at trigger
    time** — not a snapshot from when the heartbeat was created. A trailing
    `/` means "everything under this folder". The fetched content is
-   injected into that turn's context under a size cap.
+   injected into that turn's context up to a 24,000-character cap, which
+   the runner enforces rather than Agora.
 2. Builds one turn for `personaId` in `conversationId`, with `task`
    layered in as the instruction for this particular firing.
 3. Calls the provider named by the persona's `model` field.

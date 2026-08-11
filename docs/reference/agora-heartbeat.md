@@ -30,7 +30,7 @@ the persona it names.
 | `schedule` | string | — | **Required.** See [Schedule grammar](#schedule-grammar). |
 | `task` | string | `""` | The instruction for this firing — what the persona is being woken up to do. |
 | `workflowId` | string \| null | `null` | When set, firing runs that Workflow's steps instead of a single curator turn. Participants then come from the bound conversation's own persona list. |
-| `vaultPaths` | string[] | `[]` | Vault document paths. A trailing `/` means "everything under this folder". Fetched **fresh at trigger time**, then injected under a size cap of roughly 24k characters. |
+| `vaultPaths` | string[] | `[]` | Vault document paths. A trailing `/` means "everything under this folder". Fetched **fresh at trigger time**, then injected up to `VAULT_CONTEXT_CAP` — 24,000 characters of vault content per heartbeat, enforced by the runner (`agora_runner/config.py`), not by Agora. |
 | `enabled` | boolean | `true` | Disabled heartbeats are never evaluated. |
 | `forceRun` | boolean | `false` | What "Run now" sets. The runner performs the turn on its next poll and clears the flag. |
 | `lastRunAt` | string \| null | `null` | ISO 8601. The runner evaluates the schedule from this field alone. |
