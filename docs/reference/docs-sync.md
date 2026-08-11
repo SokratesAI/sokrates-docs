@@ -1,7 +1,7 @@
 ---
 id: docs-sync
 title: docs-sync (the self-documenting mechanism)
-sidebar_position: 3
+sidebar_position: 5
 ---
 
 # `docs-sync`

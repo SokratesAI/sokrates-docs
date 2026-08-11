@@ -10,5 +10,6 @@ Learning-oriented lessons that take a newcomer through a real task end to
 end, under guidance. A tutorial's job is to build confidence, not just
 convey facts — see [Diátaxis: Tutorials](https://diataxis.fr/tutorials/).
 
-No tutorials yet — this is a placeholder. Add one the first time someone
-new needs to be walked through getting a service running on the platform.
+- **[Give an agent a recurring job](/tutorials/scheduled-agent)** — build a
+  persona, give it a conversation and a schedule, and watch it fire. Ten
+  minutes, browser only.

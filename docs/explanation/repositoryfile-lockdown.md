@@ -1,7 +1,7 @@
 ---
 id: repositoryfile-lockdown
 title: Why seeded files get locked after creation
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Why seeded files get locked after creation
