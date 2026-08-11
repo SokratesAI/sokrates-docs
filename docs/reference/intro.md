@@ -15,4 +15,11 @@ workflow (Gemini engine) — see `.github/workflows/docs-sync.md`. It proposes
 a PR when it detects reference content has drifted from the code it
 describes; a human still merges.
 
-No reference pages yet — this is a placeholder.
+- **[`GitHubService`](/reference/github-service)** — the Platform Product
+  Catalog's service-ordering CRD.
+- **[Agora Persona](/reference/agora-persona)** — fields, capability
+  grants, model identifiers and routes.
+- **[Agora Heartbeat](/reference/agora-heartbeat)** — schedule grammar,
+  fields and firing behaviour.
+- **[`docs-sync`](/reference/docs-sync)** — the workflow that keeps this
+  section current, and its known gaps.
