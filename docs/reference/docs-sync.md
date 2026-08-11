@@ -47,14 +47,63 @@ It cannot read any other repo. This list is deliberately narrow —
 widened only when a real `missing-tool` report justified it (see below),
 not granted broadly up front.
 
+## Which model it runs on, and why that is a quota question
+
+`docs-sync` stays on `gemini-flash-latest` (decided 2026-08-11). A model
+comparison had been left open between keeping this model, retrying the
+cheaper `gemini-3.5-flash-lite` on a narrower task, or provisioning a
+dedicated Gemini API key. That framing turned out to be the wrong axis:
+**the constraint is not which model is capable enough, it is that one API
+key backs both this weekly batch job and live interactive traffic.**
+
+Two observations behind that, **neither of which is checkable from inside
+this repo** — both come from the Agora platform next door, and are
+recorded here because this page is where the consequence lives:
+
+- Measured against the live Agora persona list on 2026-08-11: three
+  personas run against the same `GEMINI_API_KEY` this workflow uses —
+  `Agora` and `Learning-Agent` on `gemini-3.6-flash`, and `Gemini` on
+  `gemini-3.5-flash-lite`.
+- From the eval runs described in this project's handover report
+  (`Sokrates-Docs/Architecture.md` §6.5, vault): a single evaluation run
+  of this workflow's task did roughly 277K tokens across 16 tool calls
+  before exhausting that key's daily quota.
+
+Together: a sweep here can starve a persona a person is talking to.
+
+That rules out the cheaper-model option on its own terms: `gemini-3.5-flash-lite`
+is itself a live persona's model, so moving to it does not buy quota
+isolation — it only changes which user-facing persona gets starved first.
+Capability was never the deciding factor.
+
+One thing deliberately **not** claimed here: `gemini-flash-latest` is a
+rolling alias, and the Generative Language API does not expose what it
+resolves to (`GET /v1beta/models/gemini-flash-latest` reports version
+`Gemini Flash Latest`, not an underlying build). Whether it draws on the
+same per-model bucket as `gemini-3.6-flash` is unknown, and the decision
+above does not depend on it — the key is shared either way.
+
+The real fix is a dedicated Gemini API key for docs automation, separate
+from the platform's. Until that exists, this workflow stays weekly and
+stays on the shared key, and the dispatch-on-merge mechanism below stays
+unbuilt.
+
 ## Known gaps
 
 *Agent-maintained. Update this list as part of any `docs-sync` PR that
 reports a `missing-tool`, and remove/check off entries once the
 underlying access or capability is added.*
 
-- None open as of 2026-08-07 — the original gap (no read access to
-  `platform-config`/`sokrates-cli`/`operator`, first reported in run
+- **No dedicated API quota** (open, 2026-08-11). This workflow's Gemini
+  key is shared with live Agora persona traffic, so a sweep here can
+  exhaust the quota of a service someone is actively using — see "Which
+  model it runs on" above. Not a `missing-tool` gap: nothing is
+  inaccessible, the capacity is contended. Closing it means provisioning
+  a Gemini key dedicated to docs automation, which is a human action, not
+  something this workflow can propose. It is what currently blocks
+  dispatch-on-merge.
+- No access gaps open as of 2026-08-07 — the original one (no read access
+  to `platform-config`/`sokrates-cli`/`operator`, first reported in run
   [31179199461](https://github.com/SokratesAI/sokrates-docs/actions/runs/31179199461))
   was closed the same day.
 
@@ -65,7 +114,10 @@ underlying access or capability is added.*
   `platform-config` today won't be reflected here until the next weekly
   sweep (or someone runs it manually). A diff-aware, dispatch-triggered
   version (fires when a documented source repo's `main` changes, looks at
-  that specific diff) is planned but not built.
+  that specific diff) is designed but not built, and is deliberately
+  blocked on the quota question above: it would turn Gemini calls from
+  weekly into one per merge across every documented repo, on a key that
+  live personas already share.
 - **Doesn't write tutorials, how-to guides, or explanations.** By design
   — those need a human's judgment about what's worth teaching.
 - **Doesn't implement missing capabilities itself.** If it reports a
