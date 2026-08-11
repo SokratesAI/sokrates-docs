@@ -56,12 +56,20 @@ dedicated Gemini API key. That framing turned out to be the wrong axis:
 **the constraint is not which model is capable enough, it is that one API
 key backs both this weekly batch job and live interactive traffic.**
 
-Measured 2026-08-11: three personas on the Agora platform run against the
-same `GEMINI_API_KEY` this workflow uses — `Agora` and `Learning-Agent`
-on `gemini-3.6-flash`, and `Gemini` on `gemini-3.5-flash-lite`. A single
-evaluation run of this workflow's task did roughly 277K tokens across 16
-tool calls before exhausting that key's daily quota. So a sweep here can
-starve a persona a person is talking to.
+Two observations behind that, **neither of which is checkable from inside
+this repo** — both come from the Agora platform next door, and are
+recorded here because this page is where the consequence lives:
+
+- Measured against the live Agora persona list on 2026-08-11: three
+  personas run against the same `GEMINI_API_KEY` this workflow uses —
+  `Agora` and `Learning-Agent` on `gemini-3.6-flash`, and `Gemini` on
+  `gemini-3.5-flash-lite`.
+- From the eval runs described in this project's handover report
+  (`Sokrates-Docs/Architecture.md` §6.5, vault): a single evaluation run
+  of this workflow's task did roughly 277K tokens across 16 tool calls
+  before exhausting that key's daily quota.
+
+Together: a sweep here can starve a persona a person is talking to.
 
 That rules out the cheaper-model option on its own terms: `gemini-3.5-flash-lite`
 is itself a live persona's model, so moving to it does not buy quota
@@ -86,8 +94,16 @@ unbuilt.
 reports a `missing-tool`, and remove/check off entries once the
 underlying access or capability is added.*
 
-- None open as of 2026-08-07 — the original gap (no read access to
-  `platform-config`/`sokrates-cli`/`operator`, first reported in run
+- **No dedicated API quota** (open, 2026-08-11). This workflow's Gemini
+  key is shared with live Agora persona traffic, so a sweep here can
+  exhaust the quota of a service someone is actively using — see "Which
+  model it runs on" above. Not a `missing-tool` gap: nothing is
+  inaccessible, the capacity is contended. Closing it means provisioning
+  a Gemini key dedicated to docs automation, which is a human action, not
+  something this workflow can propose. It is what currently blocks
+  dispatch-on-merge.
+- No access gaps open as of 2026-08-07 — the original one (no read access
+  to `platform-config`/`sokrates-cli`/`operator`, first reported in run
   [31179199461](https://github.com/SokratesAI/sokrates-docs/actions/runs/31179199461))
   was closed the same day.
 
