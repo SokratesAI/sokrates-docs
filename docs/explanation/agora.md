@@ -152,7 +152,11 @@ subscription path never costs you a model — only a provider prefix. This
 is why the model catalog carries an explicit `metered` flag rather than
 leaving people to infer it from a label: the metered entries have the
 plainer names, and the free ones carry the technical `(CLI)` suffix, so
-the labels point the wrong way from the billing.
+the raw labels point the wrong way from the billing. The Studio's picker
+compensates by grouping options per provider — **Anthropic API (metered —
+costs money)** against **Claude (subscription)** — and appending
+`— metered` to each paid entry's own text as well, since a collapsed
+`<select>` shows the option alone and hides the group heading.
 
 The flag is left *undefined* on the Gemini entries rather than set to
 false. That is not an oversight. Nobody has measured whether that key is

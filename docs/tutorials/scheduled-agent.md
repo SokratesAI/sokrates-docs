@@ -48,15 +48,20 @@ Fill in:
 - **Personality**: this is the persona's standing instructions, not the
   job. Something like: *You are terse. You report what you actually found
   and never pad. If a folder was empty, one line is the correct answer.*
-- **Model**: pick an entry whose label ends in **(CLI)**.
+- **Model**: pick one from the **Claude (subscription)** group.
 
 That last choice matters more than it looks. A model id is
 `"<provider>:<model id>"`, and the `claude-cli:` provider runs on a flat
 subscription while the `anthropic:` provider is billed per token against a
-prepaid balance. The two lists hold the same underlying models, so the
-CLI entry costs you nothing in capability — but the labels point the wrong
-way, with the metered options carrying the plainer names. Read the
-provider prefix, not the label.
+prepaid balance. The two groups hold the same underlying models, so the
+subscription entry costs you nothing in capability.
+
+The dropdown groups them for you — **Anthropic API (metered — costs
+money)** against **Claude (subscription)** — and appends `— metered` to
+each paid option's own text, because a collapsed `<select>` shows only the
+chosen option and hides the group heading exactly when you most want it.
+Read the group, not the model name: the paid and free entries otherwise
+have nearly identical names.
 
 Under **Capabilities**, turn on **vaultRead** if it is not already on
 (it is on by default), and leave everything else off. Your agent needs to
@@ -95,12 +100,12 @@ Go to **Heartbeats** → **New heartbeat**.
 - **Persona**: `Morning Sweeper`
 - **Conversation**: `Morning sweep`
 - **Schedule**: choose **Daily at** and set `07:00`. (The form also offers
-  **Every** for intervals and **Cron expression** for anything those two
-  cannot express.)
-- **Task**: paste the sentence you wrote in step 1.
-- **Vault paths**: add the folder your inbox lives in, with a trailing
-  slash — a trailing `/` means "everything under this folder", without it
-  the path is a single document.
+  **Every** for intervals, **On days, at** for specific weekdays, and
+  **Cron expression** for anything the other three cannot express.)
+- **Task for the triggered turn**: paste the sentence you wrote in step 1.
+- **Vault context (injected fresh on every run)**: add the folder your
+  inbox lives in, with a trailing slash — a trailing `/` means "everything
+  under this folder", without it the path is a single document.
 
 Save.
 
@@ -139,10 +144,11 @@ Check them in this order, because each rules out the ones below it:
   confirm the heartbeat is **enabled**. Disabled heartbeats are never
   evaluated at all.
 - **You pressed Run now twice and only got one reply** — that is by
-  design. Pressing it during a run does not start a second one; the poll
-  loop is single-threaded, so the second press is picked up only after the
-  current run finishes. The button reports `already-running` rather than
-  `queued` when it can tell.
+  design. The runner keeps one thread per heartbeat and skips a heartbeat
+  whose previous run is still going, so the second press is acted on only
+  after the current run finishes. The button reports `already-running`
+  rather than `queued` when it can tell. Note this guard is per heartbeat:
+  two *different* heartbeats can run at the same time.
 - **It replied, but ignored your folder** — check the trailing slash on
   the vault path, and check that `vaultRead` is on for the persona.
 - **It replied, but rambled** — that is the persona's personality, not the

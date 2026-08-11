@@ -87,14 +87,20 @@ model is deprecated.
 ## Routes
 
 Agora serves two apps: the public one on 8080 and the internal,
-token-guarded agent surface on 8081. Only three persona routes exist on
-both.
+token-guarded agent surface on 8081.
+
+Be careful with the word "both" here. `POST /personas` and
+`GET /personas/:id` are genuinely the same handler registered twice.
+`PATCH /personas/:id` is **not** — the internal app defines its own,
+narrower handler on that path, and the two behave differently. The table
+lists them as separate rows for that reason.
 
 | Method | Path | Apps | Notes |
 |---|---|---|---|
 | `POST` | `/personas` | both | Create. Requires `name` and a catalog-valid `model`. Returns `201 {"status":"created","persona":{...}}`. |
 | `GET` | `/personas/:id` | both | Single record. |
-| `PATCH` | `/personas/:id` | both | Partial update. `capabilities` may be partial — it is merged over the existing grants, not replaced, so omitting a key leaves it unchanged. Every other field is overwritten. |
+| `PATCH` | `/personas/:id` | public | Partial update. `capabilities` may be partial — it is merged over the existing grants, not replaced, so omitting a key leaves it unchanged. Every other field is overwritten. |
+| `PATCH` | `/personas/:id` | internal | **A different handler with the same path.** Accepts `sharedMemory` and nothing else — it is the write-back path for the runner's `save_memory` tool. A body without `sharedMemory` is rejected with `400 {"error":"sharedMemory is required"}`, even if every other field in it is valid. |
 | `GET` | `/personas` | public | List, sorted by name. |
 | `DELETE` | `/personas/:id` | public | Delete. |
 | `POST` | `/personas/:id/clone` | public | Clone. Defaults the new name to `<name> (copy)`. |

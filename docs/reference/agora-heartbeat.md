@@ -115,13 +115,31 @@ use.
 |---|---|---|---|
 | `POST` | `/heartbeats` | both | Create. Returns `201 {"status":"created","heartbeat":{...}}`. |
 | `GET` | `/heartbeats` | both | List, sorted by name. |
-| `PATCH` | `/heartbeats/:id` | both | Partial update. Re-validates `schedule` if present. |
+| `PATCH` | `/heartbeats/:id` | public | Partial update. Re-validates `schedule`, `personaId`, `conversationId` and `workflowId` if present. |
+| `PATCH` | `/heartbeats/:id` | internal | **A different handler with the same path.** The runner's own bookkeeping route: it reads only `lastRunAt`, `lastResult`, `forceRun` and `conversationId`. See the warning below. |
 | `DELETE` | `/heartbeats/:id` | public | Delete. |
 | `POST` | `/heartbeats/:id/run` | public | "Run now" — sets `forceRun`. `404` if the heartbeat does not exist. |
 
 "both" means the route exists on the public app (8080) and the internal,
 token-guarded agent surface (8081). See
 [How Agora runs an agent](/explanation/agora) for why that split exists.
+
+:::danger Editing a heartbeat over the internal app silently does nothing
+The internal app's `PATCH /heartbeats/:id` is a **different handler** from
+the public one, and it reads only the four bookkeeping fields the runner
+writes back: `lastRunAt`, `lastResult`, `forceRun`, `conversationId`.
+
+It does not read `schedule`, `task`, `vaultPaths`, `enabled`, `personaId`
+or `workflowId` — and it does not reject them either. Send
+`{"schedule": "daily@09:00"}` to port 8081 and the update set is empty,
+the record is written back unchanged, and you get
+`200 {"status":"updated", ...}` with the old schedule still in the body.
+The call reports success and changes nothing.
+
+To actually change a heartbeat's configuration, use the **public** app's
+route, or the Studio. This route has no capability gate on purpose — it is
+the engine's own bookkeeping, not a persona-callable tool.
+:::
 
 ### "Run now" while a run is in flight
 
@@ -132,11 +150,21 @@ starts and overwrites it on every terminal path, so that field is the
 honest "is a cycle in flight" signal — and the route reads it *before*
 setting `forceRun`.
 
-Pressing "Run now" during a run does **not** start a second one. The
-runner's poll loop is single-threaded and the deployment is `Recreate`
-with one replica, so the press is only picked up once the current cycle
-ends — which can be a long time later. The two distinct statuses exist
-because reporting both as `queued` made that invisible.
+Pressing "Run now" on a heartbeat that is already running does **not**
+start a second run *of that heartbeat*. The runner keeps one thread per
+heartbeat and skips a heartbeat whose previous thread is still alive, so
+the press is only acted on once that run finishes — which can be a long
+time later. The two distinct statuses exist because reporting both as
+`queued` made that invisible.
+
+The guard is **per heartbeat, not global**. Every heartbeat run has had
+its own thread since 2026-08-08, and the poll loop returns in
+milliseconds, so two *different* heartbeats can be running at the same
+moment in the same runner pod — and will be picked up within one poll
+interval (5 seconds by default) of coming due. If two heartbeats hold
+capabilities like `terminalExec`, they share that pod's cluster RBAC and
+GitHub token concurrently. Do not assume scheduled work is serialised
+against other scheduled work; only against itself.
 
 It still queues rather than refusing, on purpose: a hard-killed pod leaves
 `lastResult` stuck at `"running"` forever, and a version that refused
