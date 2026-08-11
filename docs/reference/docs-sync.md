@@ -47,6 +47,39 @@ It cannot read any other repo. This list is deliberately narrow —
 widened only when a real `missing-tool` report justified it (see below),
 not granted broadly up front.
 
+## Which model it runs on, and why that is a quota question
+
+`docs-sync` stays on `gemini-flash-latest` (decided 2026-08-11). A model
+comparison had been left open between keeping this model, retrying the
+cheaper `gemini-3.5-flash-lite` on a narrower task, or provisioning a
+dedicated Gemini API key. That framing turned out to be the wrong axis:
+**the constraint is not which model is capable enough, it is that one API
+key backs both this weekly batch job and live interactive traffic.**
+
+Measured 2026-08-11: three personas on the Agora platform run against the
+same `GEMINI_API_KEY` this workflow uses — `Agora` and `Learning-Agent`
+on `gemini-3.6-flash`, and `Gemini` on `gemini-3.5-flash-lite`. A single
+evaluation run of this workflow's task did roughly 277K tokens across 16
+tool calls before exhausting that key's daily quota. So a sweep here can
+starve a persona a person is talking to.
+
+That rules out the cheaper-model option on its own terms: `gemini-3.5-flash-lite`
+is itself a live persona's model, so moving to it does not buy quota
+isolation — it only changes which user-facing persona gets starved first.
+Capability was never the deciding factor.
+
+One thing deliberately **not** claimed here: `gemini-flash-latest` is a
+rolling alias, and the Generative Language API does not expose what it
+resolves to (`GET /v1beta/models/gemini-flash-latest` reports version
+`Gemini Flash Latest`, not an underlying build). Whether it draws on the
+same per-model bucket as `gemini-3.6-flash` is unknown, and the decision
+above does not depend on it — the key is shared either way.
+
+The real fix is a dedicated Gemini API key for docs automation, separate
+from the platform's. Until that exists, this workflow stays weekly and
+stays on the shared key, and the dispatch-on-merge mechanism below stays
+unbuilt.
+
 ## Known gaps
 
 *Agent-maintained. Update this list as part of any `docs-sync` PR that
@@ -65,7 +98,10 @@ underlying access or capability is added.*
   `platform-config` today won't be reflected here until the next weekly
   sweep (or someone runs it manually). A diff-aware, dispatch-triggered
   version (fires when a documented source repo's `main` changes, looks at
-  that specific diff) is planned but not built.
+  that specific diff) is designed but not built, and is deliberately
+  blocked on the quota question above: it would turn Gemini calls from
+  weekly into one per merge across every documented repo, on a key that
+  live personas already share.
 - **Doesn't write tutorials, how-to guides, or explanations.** By design
   — those need a human's judgment about what's worth teaching.
 - **Doesn't implement missing capabilities itself.** If it reports a
