@@ -25,8 +25,11 @@ objects.
 Applying a composite resource is the order. The object that results from applying it
 is the ticket. There is no second record to invent.
 
-Here is a real one from this platform — a `TailscaleExposure`, four fields, which
-puts an existing in-cluster Service on the tailnet:
+Here is one written against a definition that is live on this platform — a
+`TailscaleExposure`, four fields, which puts an existing in-cluster Service on the
+tailnet. The definition and its Composition were installed on 2026-08-25; **no
+instance of one has been created yet**, so this is the first one you would write
+rather than a reading off something already running:
 
 ```yaml
 apiVersion: platform.sokratesai.io/v1alpha1
@@ -47,20 +50,23 @@ admission *is* your `200 OK`. The ticket id is the object's own name and UID; yo
 not have to mint one.
 
 Then the status you poll is the object's `status.conditions`, which Crossplane writes
-and keeps writing:
+and keeps writing. Here it is off a composite resource that really is running — the
+`GitHubService` behind this documentation site, ordered 19 days ago:
 
 ```bash
-kubectl get tailscaleexposure expose-nova -n agents \
+kubectl get githubservice sokrates-docs -n platform-catalog \
   -o jsonpath='{range .status.conditions[*]}{.type}={.status} {.reason}{"\n"}{end}'
 ```
 
 ```
 Synced=True ReconcileSuccess
 Ready=True Available
+Responsive=True WatchCircuitClosed
 ```
 
 `Synced` says Crossplane understood the order. `Ready` says the thing you ordered
-exists and works. A failure lands in the same place, with a `message` — so there is
+exists and works. `Responsive` says the controller is still watching rather than
+having backed off. A failure lands in the same place, with a `message` — so there is
 one status surface for "accepted", "in progress", "done" and "broken", instead of a
 job-status endpoint you have to design and then keep truthful.
 
@@ -92,7 +98,8 @@ From the live `TailscaleExposure` XRD, on the `hostname` field:
 > The name this appears at on the tailnet — `nova` becomes nova.tailc83eb3.ts.net.
 > Deliberately required and deliberately NOT defaulted from the claim's own name: the
 > tailnet is a flat global namespace shared with every other machine on it, so a
-> hostname collision silently steals traffic from something else.
+> hostname collision silently steals traffic from something else. Making it explicit
+> means nobody ever orders one by accident.
 
 That means the "API layer" you still have to build is genuinely thin. It does two
 things:
@@ -141,17 +148,25 @@ traces in a cluster long after the version has moved on.
 **In v1**, Crossplane composed *managed resources* — objects belonging to a provider
 it had installed. To make it manage a plain Kubernetes object (an Ingress, a
 ConfigMap, a NetworkPolicy), you needed `provider-kubernetes` installed and had to
-wrap each object in an `Object` resource. That is a real adapter, and for a
-single-node cluster it was often more machinery than the thing it managed. So the
-common workaround was: have Crossplane write *YAML text into a git repo*, and let
-ArgoCD create the actual object from that file later.
+wrap each object in an `Object` resource. That is a real adapter, and on a single-node
+cluster it can be more machinery than the thing it manages. The workaround this
+platform took is visible in its own oldest Composition: `githubservice-basic` has
+Crossplane write the new service's Deployment, Service and Ingress into a `-config`
+repo *as templated YAML text*, and lets ArgoCD create the real objects from those
+files later. Crossplane's job ends when the file is written.
 
-That workaround has a specific cost, and it is not "an extra hop". It is that
-**nothing then owns the live object**. The git file says one thing, the cluster says
-another, and no controller compares them. ArgoCD notices only if self-heal auto-sync
-is enabled for that Application — otherwise it marks the app `OutOfSync` and waits
-for a person. And it can only do even that for objects it was told about; anything
-created outside a tracked path is invisible to it entirely.
+That has a specific cost, and it is not "an extra hop". It is that **no controller
+compares the file with the live object in either direction** — the XR cannot see what
+the cluster did with its text, and editing the live object never reaches the XR.
+
+How much that costs depends on your GitOps setup, and here it is less than it sounds:
+all 12 ArgoCD Applications in this cluster run with `selfHeal: true` and `prune: true`,
+so ArgoCD does revert hand-edits to everything it manages. **The gap is not drift on
+managed objects; it is objects nothing was ever told to manage.** Of the ten Tailscale
+Ingresses live here, two — `headlamp/headlamp-tailscale` and `obsidian/couchdb-tailscale`
+— carry no `argocd.argoproj.io/tracking-id` at all, so no Application owns them.
+ArgoCD cannot reconcile what it does not know exists, and that is the case a composite
+resource answers and a git file cannot.
 
 **In v2**, a composite resource can compose ordinary Kubernetes objects directly, with
 no provider adapter, and it reconciles them forever. Edit the live Ingress by hand and
@@ -177,7 +192,8 @@ kubectl get xrd -o custom-columns='NAME:.metadata.name,SCOPE:.spec.scope,CLAIM:.
 All three XRDs are `apiextensions.crossplane.io/v2`, `scope: Namespaced`, with no
 `claimNames` — the v2 model. And `tailscaleexposure-ingress` is a Composition that
 composes a `networking.k8s.io/v1` `Ingress` and a `NetworkPolicy` directly, through
-`function-patch-and-transform`, with no `provider-kubernetes` in the cluster at all.
+`function-patch-and-transform`, and no `provider-kubernetes` pod is running in
+`crossplane-system` — the only provider there is `provider-upjet-github`.
 
 So the "adapter-free hands" are not a future upgrade to argue about. They are what
 `TailscaleExposure` was built on, and it is the worked example for anything ordered
