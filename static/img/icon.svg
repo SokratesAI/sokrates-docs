@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sokrates Docs">
+  <!-- Full-bleed background: this icon is declared `purpose: "any maskable"`,
+       and a maskable icon is cropped to whatever shape the launcher wants.
+       Anything that must survive that crop has to sit inside the middle 80%,
+       which is why the glyph below is inset rather than filling the square. -->
+  <rect width="512" height="512" fill="#3ECC5F"/>
+  <!-- An open book: the same Diátaxis-docs idea the site is about, and it
+       reads at 48px where the Docusaurus mascot in logo.svg does not. -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M256 168c-30-24-70-32-114-28v208c44-4 84 4 114 28 30-24 70-32 114-28V140c-44-4-84 4-114 28z"/>
+    <path d="M256 168v208"/>
+  </g>
+</svg>
