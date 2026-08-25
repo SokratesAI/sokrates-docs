@@ -32,6 +32,36 @@ const config: Config = {
     locales: ['en'],
   },
 
+  // Installable, and readable on a dead tailnet link -- same thing Nova's own
+  // site does by hand, done here with the official plugin because Docusaurus
+  // owns the build output and a hand-rolled service worker would have to guess
+  // at its hashed asset names.
+  //
+  // `offlineModeActivationStrategies` deliberately omits `always`: the docs are
+  // rewritten by the gh-aw sync workflow, so serving a cached page to a browser
+  // that could have reached the network is how a reader ends up reading a
+  // reference page that no longer matches the cluster. Offline mode turns on
+  // once the app is actually installed (or explicitly asked for with
+  // `?docusaurus-plugin-pwa-debug`), which is the case where there is no
+  // network to prefer.
+  plugins: [
+    [
+      '@docusaurus/plugin-pwa',
+      {
+        debug: false,
+        offlineModeActivationStrategies: ['appInstalled', 'standalone', 'queryString'],
+        pwaHead: [
+          {tagName: 'link', rel: 'icon', href: '/img/icon.svg'},
+          {tagName: 'link', rel: 'manifest', href: '/manifest.json'},
+          {tagName: 'meta', name: 'theme-color', content: '#3ECC5F'},
+          {tagName: 'meta', name: 'apple-mobile-web-app-capable', content: 'yes'},
+          {tagName: 'meta', name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
+          {tagName: 'link', rel: 'apple-touch-icon', href: '/img/icon.svg'},
+        ],
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
