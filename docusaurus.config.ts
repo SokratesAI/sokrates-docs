@@ -56,7 +56,12 @@ const config: Config = {
           {tagName: 'meta', name: 'theme-color', content: '#3ECC5F'},
           {tagName: 'meta', name: 'apple-mobile-web-app-capable', content: 'yes'},
           {tagName: 'meta', name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
-          {tagName: 'link', rel: 'apple-touch-icon', href: '/img/icon.svg'},
+          // PNG, not the SVG beside it. iOS Safari reads this tag directly and
+          // never looks at the manifest for icons, and it does not rasterise
+          // SVG here -- it falls back to a screenshot of the page. The Nova
+          // site has the same SVG-only tag and the same defect; this one is
+          // fixed, that one is filed.
+          {tagName: 'link', rel: 'apple-touch-icon', href: '/img/apple-touch-icon.png'},
         ],
       },
     ],
