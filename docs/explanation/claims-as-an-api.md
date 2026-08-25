@@ -38,7 +38,7 @@ metadata:
   name: expose-nova
   namespace: agents
 spec:
-  hostname: nova              # becomes nova.tailc83eb3.ts.net
+  hostname: nova              # becomes nova.<your-tailnet>.ts.net
   serviceName: nova-site
   port: 8083
   targetPodLabels:
@@ -95,7 +95,7 @@ that a form or a TUI can render as help text.
 
 From the live `TailscaleExposure` XRD, on the `hostname` field:
 
-> The name this appears at on the tailnet — `nova` becomes nova.tailc83eb3.ts.net.
+> The name this appears at on the tailnet — `nova` becomes `nova.your-tailnet.ts.net`.
 > Deliberately required and deliberately NOT defaulted from the claim's own name: the
 > tailnet is a flat global namespace shared with every other machine on it, so a
 > hostname collision silently steals traffic from something else. Making it explicit
