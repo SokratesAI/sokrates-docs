@@ -54,10 +54,30 @@ engine: gemini
 # and that is a deliberate trade: a weaker run that completes beats a
 # stronger one that dies at 20 requests.
 #
-# If this exhausts too, the free tier on this project genuinely cannot run
-# docs-sync and the fix is a credential, not a model -- Edvard has already
-# minted a Groq key for exactly this. gh-aw v0.84.3 has no Groq engine, so
-# that path means either a newer gh-aw or a custom engine.
+# 2026-08-27, measured: it exhausts too. Run 33034688172 refused it after
+# ONE tool call -- "limit: 500, model: gemini-3.5-flash-lite". The wider
+# tier is real and it is already spent: the newspaper-generator and
+# newspaper-rss-refresh CronJobs run ~1000 free calls a night against this
+# same project, and gemini-3.5-flash-lite is what they use.
+#
+# So the whole question is settled, on this project's key, in one hour:
+#
+#   gemini-3.7-flash        limit 20/day    (run 33031195723)
+#   gemini-3.5-flash        limit 20/day    (run 33034450016)
+#   gemini-3.5-flash-lite   limit 500/day   (run 33034688172), already spent
+#
+# No model choice makes docs-sync green here. It needs its own credential,
+# which is exactly what Edvard concluded when he minted a Groq key for it.
+# gh-aw v0.84.3 has no Groq engine, so that path means a newer gh-aw or a
+# custom engine (see nova/resources/research/gh-aw-groq-2026-08.md).
+#
+# The pin stays on flash-lite anyway, because it is the only one of the
+# three that CAN work: 20/day can never fit a ~31-turn run under any
+# circumstances, whereas 500/day fits it comfortably the moment the
+# contention goes -- either a dedicated key, or the newspaper batching
+# already on the backlog, which cuts that job's spend about 20x.
+#
+# Do not spend another cycle testing model pins. The numbers are above.
 #
 # When this pin does eventually need moving, move it to another *settled*
 # model. Do not put the alias back.
