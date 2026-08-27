@@ -14,18 +14,41 @@ engine: gemini
 # quota exhaustion on this key -- it's shared with Agora's live traffic
 # (see vault Projects/Sokrates/Projects/Sokrates-Docs/_context.md).
 #
-# 2026-08-07: the specific pin used here (gemini-3-flash) turned out not
-# to exist at all -- checked the real model list via the API's own
-# ListModels endpoint (https://generativelanguage.googleapis.com/v1beta/models)
-# rather than guessing again; only `gemini-3-flash-preview` existed under
-# that name, and the stable lineup had already moved past it
-# (gemini-3.5-flash, gemini-3.6-flash). Given this workflow's whole point
-# is low-maintenance self-updating docs, chasing Google's release cadence
-# with a fresh hardcoded pin every time one goes stale defeats the
-# purpose -- use the rolling "latest" alias instead, which stays on the
-# free Flash tier by construction (Pro models require billing; Flash
-# doesn't) without needing to be updated again.
-model: gemini-flash-latest
+# 2026-08-07: switched to the rolling `gemini-flash-latest` alias, on the
+# reasoning that Flash is free by construction (Pro models require
+# billing; Flash doesn't) and an alias never goes stale the way a pin
+# does. That reasoning had a hole and it took the workflow down for three
+# weeks -- every scheduled run from 2026-08-14 onward failed.
+#
+# 2026-08-27: measured, not guessed. `gemini-flash-latest` now resolves to
+# `gemini-3.7-flash` (one generateContent call against this project's key;
+# the response's `modelVersion` field says so). Google's free tier for that
+# model is 5 requests/minute and 20 requests/day -- its own 429 body names
+# the numbers: "Quota exceeded for metric:
+# generativelanguage.googleapis.com/generate_content_free_tier_requests,
+# limit: 20, model: gemini-3.7-flash". A docs-sync run makes ~31 model
+# turns (run 33031195723 reported `tool_calls: 31`, 500,429 input tokens),
+# so it cannot fit inside 20 requests on any key. A second API key would
+# not fix this: the limit is per-key AND per-model, and 2 x 20 is still
+# short of 31.
+#
+# So the rolling alias is not neutral here -- it drifts *toward* tighter
+# quota by construction, because Google gives its newest models the
+# smallest free tiers and the alias always points at the newest one. A pin
+# to a settled model is the low-maintenance choice, which is the opposite
+# of what the 2026-08-07 note concluded.
+#
+# gemini-3.5-flash is the pin. It is a settled model on this project's key
+# (verified reachable by the same generateContent call), and the free tier
+# on the 3.5 line is demonstrably wide enough for this workload: the
+# newspaper-generator CronJob in SokratesAI/platform-config makes several
+# hundred free-tier calls a night on gemini-3.5-flash-lite and succeeded
+# most recently 2026-08-26T22:00Z. If this ever exhausts anyway, drop to
+# gemini-3.5-flash-lite, which carries the wider tier of the two.
+#
+# When this pin does eventually need moving, move it to another *settled*
+# model. Do not put the alias back.
+model: gemini-3.5-flash
 
 # 2026-08-07: closes the gap this workflow itself reported (see
 # docs/reference/docs-sync.md's "Known gaps" section and the first
