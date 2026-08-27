@@ -14,18 +14,80 @@ engine: gemini
 # quota exhaustion on this key -- it's shared with Agora's live traffic
 # (see vault Projects/Sokrates/Projects/Sokrates-Docs/_context.md).
 #
-# 2026-08-07: the specific pin used here (gemini-3-flash) turned out not
-# to exist at all -- checked the real model list via the API's own
-# ListModels endpoint (https://generativelanguage.googleapis.com/v1beta/models)
-# rather than guessing again; only `gemini-3-flash-preview` existed under
-# that name, and the stable lineup had already moved past it
-# (gemini-3.5-flash, gemini-3.6-flash). Given this workflow's whole point
-# is low-maintenance self-updating docs, chasing Google's release cadence
-# with a fresh hardcoded pin every time one goes stale defeats the
-# purpose -- use the rolling "latest" alias instead, which stays on the
-# free Flash tier by construction (Pro models require billing; Flash
-# doesn't) without needing to be updated again.
-model: gemini-flash-latest
+# 2026-08-07: switched to the rolling `gemini-flash-latest` alias, on the
+# reasoning that Flash is free by construction (Pro models require
+# billing; Flash doesn't) and an alias never goes stale the way a pin
+# does. That reasoning had a hole and it took the workflow down for three
+# weeks -- every scheduled run from 2026-08-14 onward failed.
+#
+# 2026-08-27: measured, not guessed. `gemini-flash-latest` now resolves to
+# `gemini-3.7-flash` (one generateContent call against this project's key;
+# the response's `modelVersion` field says so). Google's free tier for that
+# model is 5 requests/minute and 20 requests/day -- its own 429 body names
+# the numbers: "Quota exceeded for metric:
+# generativelanguage.googleapis.com/generate_content_free_tier_requests,
+# limit: 20, model: gemini-3.7-flash". A docs-sync run makes ~31 model
+# turns (run 33031195723 reported `tool_calls: 31`, 500,429 input tokens),
+# so it cannot fit inside 20 requests. I did not test a second key, so I
+# cannot say the limit is per-key rather than per-project -- what I can
+# say is that 20 is smaller than 31, so no amount of key-swapping makes
+# THIS model work.
+#
+# So the rolling alias is not neutral here -- it drifts *toward* tighter
+# quota by construction, because Google gives its newest models the
+# smallest free tiers and the alias always points at the newest one. A pin
+# to a settled model is the low-maintenance choice, which is the opposite
+# of what the 2026-08-07 note concluded.
+#
+# The 20/day cap is NOT specific to the newest model. Tried gemini-3.5-flash
+# first on the theory that a settled model carries a wider free tier; run
+# 33034450016 refused it after 6 tool calls with the identical message,
+# "limit: 20, model: gemini-3.5-flash". So the whole Flash line is capped at
+# 20 free requests a day on this project, and picking a different Flash
+# model does not buy headroom on its own.
+#
+# gemini-3.5-flash-lite is the pin, and it is the only model here with
+# direct evidence of a wider tier rather than an assumption: the
+# newspaper-generator CronJob in SokratesAI/platform-config runs several
+# hundred free-tier calls a night against this same project on
+# gemini-3.5-flash-lite and succeeded most recently 2026-08-26T22:00Z.
+# Lite is a weaker model than Flash for this kind of fact-checking work,
+# and that is a deliberate trade: a weaker run that completes beats a
+# stronger one that dies at 20 requests.
+#
+# 2026-08-27, measured: it exhausts too. Run 33034688172 refused it after
+# ONE tool call -- "limit: 500, model: gemini-3.5-flash-lite". The wider
+# tier is real and it is already spent: the newspaper-generator and
+# newspaper-rss-refresh CronJobs run ~1000 free calls a night against this
+# same project, and gemini-3.5-flash-lite is what they use.
+#
+# So the whole question is settled, on this project's key, in one hour:
+#
+#   gemini-3.7-flash        limit 20/day    (run 33031195723)
+#   gemini-3.5-flash        limit 20/day    (run 33034450016)
+#   gemini-3.5-flash-lite   limit 500/day   (run 33034688172), already spent
+#
+# No model choice makes docs-sync green on this project's key. What would
+# work is flash-lite on a project of its own: 500/day is ~16x what a run
+# needs, and the only reason it fails today is that the newspaper jobs
+# spend it first. So a dedicated credential IS the fix, which is exactly
+# what Edvard concluded when he minted a Groq key for it -- and a second
+# free Gemini key on a separate Google project would do it just as well,
+# with no engine work at all.
+# gh-aw v0.84.3 has no Groq engine, so that path means a newer gh-aw or a
+# custom engine (see nova/resources/research/gh-aw-groq-2026-08.md).
+#
+# The pin stays on flash-lite anyway, because it is the only one of the
+# three that CAN work: 20/day can never fit a ~31-turn run under any
+# circumstances, whereas 500/day fits it comfortably the moment the
+# contention goes -- either a dedicated key, or the newspaper batching
+# already on the backlog, which cuts that job's spend about 20x.
+#
+# Do not spend another cycle testing model pins. The numbers are above.
+#
+# When this pin does eventually need moving, move it to another *settled*
+# model. Do not put the alias back.
+model: gemini-3.5-flash-lite
 
 # 2026-08-07: closes the gap this workflow itself reported (see
 # docs/reference/docs-sync.md's "Known gaps" section and the first
