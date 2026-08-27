@@ -28,9 +28,10 @@ engine: gemini
 # generativelanguage.googleapis.com/generate_content_free_tier_requests,
 # limit: 20, model: gemini-3.7-flash". A docs-sync run makes ~31 model
 # turns (run 33031195723 reported `tool_calls: 31`, 500,429 input tokens),
-# so it cannot fit inside 20 requests on any key. A second API key would
-# not fix this: the limit is per-key AND per-model, and 2 x 20 is still
-# short of 31.
+# so it cannot fit inside 20 requests. I did not test a second key, so I
+# cannot say the limit is per-key rather than per-project -- what I can
+# say is that 20 is smaller than 31, so no amount of key-swapping makes
+# THIS model work.
 #
 # So the rolling alias is not neutral here -- it drifts *toward* tighter
 # quota by construction, because Google gives its newest models the
@@ -66,8 +67,13 @@ engine: gemini
 #   gemini-3.5-flash        limit 20/day    (run 33034450016)
 #   gemini-3.5-flash-lite   limit 500/day   (run 33034688172), already spent
 #
-# No model choice makes docs-sync green here. It needs its own credential,
-# which is exactly what Edvard concluded when he minted a Groq key for it.
+# No model choice makes docs-sync green on this project's key. What would
+# work is flash-lite on a project of its own: 500/day is ~16x what a run
+# needs, and the only reason it fails today is that the newspaper jobs
+# spend it first. So a dedicated credential IS the fix, which is exactly
+# what Edvard concluded when he minted a Groq key for it -- and a second
+# free Gemini key on a separate Google project would do it just as well,
+# with no engine work at all.
 # gh-aw v0.84.3 has no Groq engine, so that path means a newer gh-aw or a
 # custom engine (see nova/resources/research/gh-aw-groq-2026-08.md).
 #
