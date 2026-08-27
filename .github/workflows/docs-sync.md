@@ -38,17 +38,30 @@ engine: gemini
 # to a settled model is the low-maintenance choice, which is the opposite
 # of what the 2026-08-07 note concluded.
 #
-# gemini-3.5-flash is the pin. It is a settled model on this project's key
-# (verified reachable by the same generateContent call), and the free tier
-# on the 3.5 line is demonstrably wide enough for this workload: the
-# newspaper-generator CronJob in SokratesAI/platform-config makes several
-# hundred free-tier calls a night on gemini-3.5-flash-lite and succeeded
-# most recently 2026-08-26T22:00Z. If this ever exhausts anyway, drop to
-# gemini-3.5-flash-lite, which carries the wider tier of the two.
+# The 20/day cap is NOT specific to the newest model. Tried gemini-3.5-flash
+# first on the theory that a settled model carries a wider free tier; run
+# 33034450016 refused it after 6 tool calls with the identical message,
+# "limit: 20, model: gemini-3.5-flash". So the whole Flash line is capped at
+# 20 free requests a day on this project, and picking a different Flash
+# model does not buy headroom on its own.
+#
+# gemini-3.5-flash-lite is the pin, and it is the only model here with
+# direct evidence of a wider tier rather than an assumption: the
+# newspaper-generator CronJob in SokratesAI/platform-config runs several
+# hundred free-tier calls a night against this same project on
+# gemini-3.5-flash-lite and succeeded most recently 2026-08-26T22:00Z.
+# Lite is a weaker model than Flash for this kind of fact-checking work,
+# and that is a deliberate trade: a weaker run that completes beats a
+# stronger one that dies at 20 requests.
+#
+# If this exhausts too, the free tier on this project genuinely cannot run
+# docs-sync and the fix is a credential, not a model -- Edvard has already
+# minted a Groq key for exactly this. gh-aw v0.84.3 has no Groq engine, so
+# that path means either a newer gh-aw or a custom engine.
 #
 # When this pin does eventually need moving, move it to another *settled*
 # model. Do not put the alias back.
-model: gemini-3.5-flash
+model: gemini-3.5-flash-lite
 
 # 2026-08-07: closes the gap this workflow itself reported (see
 # docs/reference/docs-sync.md's "Known gaps" section and the first
