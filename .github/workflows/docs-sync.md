@@ -1,6 +1,38 @@
 ---
 on:
-  schedule: weekly  # fuzzy weekly maintenance sweep
+  # 2026-08-28: the hour is the fix, not the model. gh-aw's friendly
+  # `weekly` compiled to `7 5 * * 5` -- Friday 05:07 UTC -- and that slot
+  # is the worst one in the day for this key.
+  #
+  # Measured, from the cluster this project's other Gemini traffic runs
+  # in: the `newspaper-generator` CronJob in `agents` is pinned to
+  # `gemini-3.5-flash-lite`, the same model this workflow uses, and fires
+  # `0 0 * * *` in Oslo time == 22:00 UTC daily. It is the only job on
+  # that model; `newspaper-rss-refresh` uses `gemini-3.5-flash`, a
+  # separate quota bucket. So flash-lite's 500 free requests/day are
+  # spent by one job, at 22:00 UTC, every night.
+  #
+  # Google's free-tier request-per-day counter resets on a daily
+  # boundary, and it is demonstrably NOT 00:00 UTC: run 33034688172 at
+  # 02:55 UTC on 08-27 was refused with "limit: 500, model:
+  # gemini-3.5-flash-lite" -- i.e. still exhausted almost three hours
+  # after UTC midnight, by a spend that happened at 22:00 UTC the
+  # evening before. That is consistent with the documented midnight
+  # Pacific boundary (07:00 UTC in summer) and rules out UTC midnight.
+  #
+  # 05:07 UTC therefore lands ~7 hours after the nightly spend and
+  # ~2 hours before the reset: the emptiest point in the whole cycle.
+  # 07:30 UTC lands just after the reset and ~14.5 hours before the next
+  # spend, with a full 500 available against the ~31 model turns a run
+  # needs. This account's Actions scheduler has been running 36-574
+  # minutes late, so even the worst observed delay lands at 17:04 UTC --
+  # still hours clear of 22:00 UTC.
+  #
+  # Pinned rather than fuzzy on purpose: `weekly` is free to pick any
+  # hour, and which hour it picks is the entire difference between this
+  # workflow working and not working.
+  schedule:
+    - cron: "30 7 * * 5"  # Friday 07:30 UTC, just after the free-tier daily reset
   workflow_dispatch:  # manual trigger for testing
 
 permissions:
