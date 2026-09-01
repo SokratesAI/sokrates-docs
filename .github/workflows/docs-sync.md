@@ -175,6 +175,22 @@ what's worth teaching, not just fact-checking.
    `docs-sync.md` "Known gaps" edits. If you made no changes, do not open
    a PR.
 
+## Sandbox constraints
+
+**Do not run `npm`, `yarn` or `pnpm`, and do not build the site.** No
+`npm install`, no `npm ci`, no `npm run build`. Nothing in the
+instructions above asks for a build, and the sandbox cannot reach the
+npm registry: on run 33194367605 the firewall proxy logged 83 requests
+across four domains and `registry.npmjs.org` was not one of them, so an
+install neither succeeds nor fails — it hangs. That run finished all of
+its documentation work in the first six minutes, then spent thirteen
+minutes inside a single `npm install` until the 20-minute step timeout
+killed the job and threw the work away.
+
+Verify what you changed by reading files instead. A broken internal link
+is a path that does not exist under `docs/`, which `ls` answers in a
+second.
+
 ## Notes for whoever reviews `missing-tool` reports or `docs-sync.md`'s
 ## Known gaps section
 
