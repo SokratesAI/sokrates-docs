@@ -1,6 +1,32 @@
 ---
 on:
-  schedule: weekly  # fuzzy weekly maintenance sweep
+  # Explicit rather than gh-aw's fuzzy `weekly`, because the hour is the fix.
+  # This key is shared with the newspaper CronJobs in SokratesAI/platform-config
+  # and Edvard has confirmed (capture, 2026-09-01) there is no second Gemini key
+  # to be had -- so the one key gets time-sliced instead of duplicated.
+  #
+  # Google's free-tier requests-per-day counter resets at midnight Pacific,
+  # which is 07:00 UTC on PDT and 08:00 UTC on PST. 08:20 UTC is inside the
+  # fresh quota day under both offsets, and it is ahead of every scheduled
+  # Gemini spender on this project:
+  #
+  #   newspaper-generator      00:00 UTC daily   (~1000 free calls, the big one)
+  #   newspaper-rss-refresh    10:00 UTC daily
+  #   newspaper-suggestions    23:00 UTC Saturday
+  #
+  # The old slot was `7 5 * * 5` -- 05:07 UTC, which is 22:07 PDT: the last
+  # hour of the Pacific quota day and five hours downstream of the generator's
+  # nightly run. Every scheduled run this workflow has ever made fired in that
+  # window (05:43, 06:14, 06:23 UTC) and every one of them failed; both runs
+  # that have ever succeeded on a quota-limited model fired in the fresh
+  # window instead (12:40 UTC = 05:40 PDT on 08-07, 14:50 UTC = 07:50 PDT on
+  # 09-01). This is correlation over a handful of runs, not a proof -- run
+  # 33139454138 succeeded at 03:37 UTC, inside the exhausted window, so the
+  # nightly spend clearly varies. What is not in doubt is the direction: at
+  # 08:20 UTC nothing scheduled has spent against this project yet, and at
+  # 05:07 UTC everything has.
+  schedule:
+    - cron: "20 8 * * 5"
   workflow_dispatch:  # manual trigger for testing
 
 permissions:
@@ -67,15 +93,21 @@ engine: gemini
 #   gemini-3.5-flash        limit 20/day    (run 33034450016)
 #   gemini-3.5-flash-lite   limit 500/day   (run 33034688172), already spent
 #
-# No model choice makes docs-sync green on this project's key. What would
-# work is flash-lite on a project of its own: 500/day is ~16x what a run
-# needs, and the only reason it fails today is that the newspaper jobs
-# spend it first. So a dedicated credential IS the fix, which is exactly
-# what Edvard concluded when he minted a Groq key for it -- and a second
-# free Gemini key on a separate Google project would do it just as well,
-# with no engine work at all.
-# gh-aw v0.84.3 has no Groq engine, so that path means a newer gh-aw or a
-# custom engine (see nova/resources/research/gh-aw-groq-2026-08.md).
+# No model choice makes docs-sync green on this project's key AT THE HOUR
+# IT WAS RUNNING. What would work is flash-lite with 500/day to itself: a run
+# needs ~31 requests, which is ~16x headroom, and the only reason it failed
+# is that the newspaper jobs spent the day's allowance first.
+#
+# 2026-09-01, Edvard's answer to that: "I do not have a second Gemini key. We
+# either need to share it or figure something out". So a dedicated credential
+# is off the table and sharing is the instruction -- which is what the `on:`
+# block above now does, by moving the run into the part of the Pacific quota
+# day that no scheduled job has spent against yet. A day is 500 requests and
+# a run needs 31; the contention was never about volume, it was about order.
+# gh-aw v0.84.3 has no Groq engine, so the Groq path (issue #117) still means
+# a newer gh-aw or a custom engine (see
+# nova/resources/research/gh-aw-groq-2026-08.md) -- it is no longer the only
+# way out.
 #
 # The pin stays on flash-lite anyway, because it is the only one of the
 # three that CAN work: 20/day can never fit a ~31-turn run under any
