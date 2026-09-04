@@ -167,6 +167,27 @@ pre-agent-steps:
       owner: SokratesAI
       repositories: platform-config,sokrates-cli,operator,sokrates-docs
 
+# 2026-09-04: raised from gh-aw's 20-minute default, because 20 is what killed
+# run 33891965274 -- the first run that ever got past the login wall. That run
+# authenticated, read files, and reached the point of cutting a branch; the step
+# then died on the wall clock at 20:13 (15:53:54 -> 16:14:07 UTC) with only ten
+# tool calls made. Nothing was exhausted: there is no 429 and no
+# `RESOURCE_EXHAUSTED` anywhere in its log. What it spent the window on is
+# Google returning 503 UNAVAILABLE -- "This model is currently experiencing high
+# demand" -- thirteen times, each one retried with backoff.
+#
+# So the failure mode is transient upstream overload, and the only defence
+# against it is wall clock. The job-level cap is 60 minutes and that run's
+# non-agent steps took about 2, so 40 fits under it with room to spare. The
+# documentation work itself is short: run 33194367605 finished all of it in six
+# minutes. 40 buys roughly half an hour of 503 backoff before the work is thrown
+# away again.
+#
+# This key overrides the repo-variable default (`GH_AW_DEFAULT_TIMEOUT_MINUTES`,
+# unset, so 20). Prefer it over setting that variable: the variable would
+# silently move agentics-maintenance too.
+timeout-minutes: 40
+
 tools:
   github:
     github-token: ${{ steps.docs-read-token.outputs.token }}
@@ -214,9 +235,34 @@ what's worth teaching, not just fact-checking.
      `crossplane/githubservice-xrd.yaml`, and its "what gets created"
      section against `crossplane/githubservice-composition.yaml`. You
      have read access to `SokratesAI/platform-config`,
-     `SokratesAI/sokrates-cli`, and `SokratesAI/operator` via the GitHub
-     tool — use it. Do not guess field names, defaults, or behavior;
-     read the actual file.
+     `SokratesAI/sokrates-cli`, and `SokratesAI/operator`. Do not guess
+     field names, defaults, or behavior; read the actual file.
+
+     **Reach those repos through the `github` command on your `PATH`,
+     via `run_shell_command` — not through an MCP tool call.** The prompt
+     you are given carries a `<github-mcp-tools>` section that reads as
+     though `get_file_contents` were an MCP tool you can call directly.
+     In this workflow it is not: the GitHub server is mounted as a CLI
+     executable instead, the `<mcp-clis>` section lists only
+     `safeoutputs`, and the Gemini CLI is started with no MCP server
+     registered at all. Run 33891965274 spent two of its ten tool calls
+     on `github_mcp_tools__get_file_contents` and got "Tool not found.
+     Did you mean one of: run_shell_command, list_directory,
+     write_file?" both times — on the exact two files this step names.
+
+     Run `github --help` for the tool list and `github <tool> --help`
+     for a signature; those are schema-derived and are the source of
+     truth for arguments. Complex arguments go in as JSON on stdin with
+     `.` as the sentinel, the same form the `<mcp-clis>` section
+     documents for `safeoutputs`:
+
+     ```bash
+     printf '{"owner":"SokratesAI","repo":"platform-config","path":"crossplane/githubservice-xrd.yaml"}' | github get_file_contents .
+     ```
+
+     If `github` is genuinely not on `PATH` when you look, that is a
+     `missing-tool` report and a "Known gaps" entry — do not fall back to
+     `gh`, which is not authenticated here.
 3. If you find something you can fix directly and confidently, make the
    edit.
 4. If checking a claim properly would require reading a repo you don't
