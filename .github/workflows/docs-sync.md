@@ -34,7 +34,35 @@ permissions:
   issues: read
   pull-requests: read
 
-engine: gemini
+engine:
+  id: gemini
+  # 2026-09-04: pinned to the CLI gh-aw shipped before v0.88.2, because the one
+  # it ships now cannot authenticate inside its own sandbox. gh-aw v0.88.2 bumped
+  # `@google/gemini-cli` from 0.39.1 to 0.55.1, and 0.55.1's `getAuthTypeFromEnv()`
+  # returns a `gateway` auth type whenever `GOOGLE_GEMINI_BASE_URL` is set -- which
+  # the gh-aw firewall's api-proxy always sets -- and that branch is checked before
+  # the `GEMINI_API_KEY` branch. `validateAuthMethod()` has no case for `gateway`,
+  # so the run prints "Invalid auth method selected." and exits 41 after five
+  # seconds, before reading a single file. That is a bug in the CLI, not in this
+  # workflow's config, which is why sokrates-docs#31's `.gemini/settings.json` did
+  # not help.
+  #
+  # Measured 2026-09-04 on the bridge pod, both versions, both env states, with a
+  # fake API key so nothing reached Google:
+  #
+  #   0.55.1, GOOGLE_GEMINI_BASE_URL set    exit 41, "Invalid auth method selected."
+  #   0.55.1, unset                          past auth, fails at the API call (400)
+  #   0.39.1, GOOGLE_GEMINI_BASE_URL set    past auth, fails at the API call
+  #   0.39.1, unset                          past auth, fails at the API call (400)
+  #
+  # The unset rows are the negative control: without them "0.55.1 failed" would
+  # not distinguish the auth branch from a bad key. Only one of the four cells
+  # fails at auth, and it is the cell this workflow runs in.
+  #
+  # Unpin this once upstream fixes `validateAuthMethod()` -- re-run the 2x2 above
+  # against the newer CLI before doing so. Bumping gh-aw alone does NOT unpin it;
+  # this key overrides whatever the compiler would have chosen.
+  version: "0.39.1"
 # gh-aw's default gemini model (gemini-2.5-flash-lite) is deprecated for
 # new API keys and fails over to a Pro-tier model, which then hits daily
 # quota exhaustion on this key -- it's shared with Agora's live traffic
