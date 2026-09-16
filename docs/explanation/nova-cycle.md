@@ -87,8 +87,9 @@ cycles are often alive at once. Two things keep them from colliding:
 
 ## Checks before work, not after
 
-Before picking, a cycle runs one command that fans out about two dozen status
-checks in parallel: security advisories, stale version pins, failing
+Before picking, a cycle runs one command that fans out its status checks in
+parallel — about seventy of them in September 2026, each due on its own
+cadence: security advisories, stale version pins, failing
 scheduled workflows, ArgoCD and Crossplane health, heartbeats that stopped
 firing, the home NAS, and more. They share one exit convention:
 
