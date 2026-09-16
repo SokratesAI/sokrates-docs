@@ -188,6 +188,23 @@ pre-agent-steps:
 # silently move agentics-maintenance too.
 timeout-minutes: 40
 
+# 2026-09-16: raised from gh-aw's default of 5, because 5 is what killed run
+# 34749794263 (2026-09-13): `max_cache_misses_exceeded: Maximum consecutive cache
+# misses exceeded (5 / 5)`, exit 147, after five tool calls and 67 seconds. The
+# guard lives in the firewall's api-proxy and counts a response as a miss when it
+# reports input tokens and zero cache-read tokens. Gemini's implicit caching is
+# best-effort: the green scheduled run of 09-11 reported `cached: 275828`, the
+# 09-13 run reported `cached: 0` on every call. So with 5, whether a run survives
+# was decided by Google's cache, not by anything in this workflow.
+#
+# 50 sits above the ~31 model turns a full run makes (run 33031195723), so a run
+# that gets no cache hits at all can still finish. It is not disabled outright:
+# a runaway loop still stops, and the free-tier requests-per-day cap on this key
+# (see the `model:` note above) is the real budget. Set here rather than via the
+# `GH_AW_DEFAULT_MAX_TURN_CACHE_MISSES` repo variable for the same reason as
+# timeout-minutes: the variable would silently move agentics-maintenance too.
+max-turn-cache-misses: 50
+
 tools:
   github:
     github-token: ${{ steps.docs-read-token.outputs.token }}
