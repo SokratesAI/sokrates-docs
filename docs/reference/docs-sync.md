@@ -102,6 +102,7 @@ underlying access or capability is added.*
   a Gemini key dedicated to docs automation, which is a human action, not
   something this workflow can propose. It is what currently blocks
   dispatch-on-merge.
+- **Platform-config file access integrity policy restriction** (open, 2026-09-16). `github:get_file_contents` on `SokratesAI/platform-config` files (`crossplane/githubservice-xrd.yaml`, `crossplane/githubservice-composition.yaml`) returns `[Filtered] metadata:get_file_contents exists but is not accessible — filtered by integrity policy (Resource 'metadata:get_file_contents' has lower integrity than agent requires. The agent cannot read data with integrity below "merged".)`. This prevents verifying `GitHubService` CRD and Composition claims directly from the live repo source during `docs-sync`.
 - No access gaps open as of 2026-08-07 — the original one (no read access
   to `platform-config`/`sokrates-cli`/`operator`, first reported in run
   [31179199461](https://github.com/SokratesAI/sokrates-docs/actions/runs/31179199461))
