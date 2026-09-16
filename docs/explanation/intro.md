@@ -15,3 +15,6 @@ is, architectural trade-offs, background. See
   schedule firing and a reply appearing.
 - **[Why seeded files get locked after creation](/explanation/repositoryfile-lockdown)**
   — the Crossplane file-resurrection problem and how it was solved.
+- **[How Nova improves itself](/explanation/nova-cycle)** — what one
+  scheduled run of the self-improvement loop does, from heartbeat to reply,
+  and why it is built as one session that hands off through files.

@@ -84,6 +84,13 @@ const config: Config = {
     ],
   ],
 
+  // Diagrams are written as ```mermaid fences so a page can open with a
+  // picture, and so the diagram stays diffable text in the same file.
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   themeConfig: {
     colorMode: {
       respectPrefersColorScheme: true,
