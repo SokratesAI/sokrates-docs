@@ -12,3 +12,6 @@ Catalog". See [Diátaxis: How-to guides](https://diataxis.fr/how-to-guides/).
 
 - **[Order a new service](/how-to/order-a-service)** — source repo, config
   repo and a working CI/CD pipeline, without touching the GitHub UI.
+- **[Find out why a heartbeat stopped firing](/how-to/revive-a-heartbeat)** —
+  switched off, not due yet, or a run still in flight, and how to make it
+  fire now.
