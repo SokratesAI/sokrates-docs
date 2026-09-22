@@ -28,7 +28,7 @@ it in all of them.
 | `claudeCliRestricted` | boolean | unset | `claude-cli` personas only. When true, applies the bridge's full known-tool denylist to this persona's calls. Unrestricted is the default, matching an interactive Claude Code session. Ignored by every other provider. |
 | `claudeCliStateless` | boolean | unset | `claude-cli` personas only. When true, the bridge never reads or writes this conversation's stored CLI session — every turn gets the full system prompt and starts fresh, with no `--resume`. Off by default; ordinary chat personas want turn-to-turn continuity. |
 | `capabilities` | object | see below | Capability grants. Enforced server-side from this record, never from a request payload. |
-| `sharedMemory` | string | `""` | Cross-conversation scratchpad. Editable in the Studio and writable by the persona itself via the runner's `save_memory` tool. |
+| `sharedMemory` | string | `""` | Cross-conversation scratchpad. Editable via `PATCH /personas/:id` and writable by the persona itself via the runner's `save_memory` tool. |
 | `isTemplate` | boolean | `false` | Marks the record as a template. Templates are ordinary editable records, never auto-attached to conversations. |
 | `createdAt` | string | generated | ISO 8601. |
 | `updatedAt` | string | generated | ISO 8601. |
@@ -74,7 +74,7 @@ Each catalog entry carries `supportsThinking`, an optional
 `contextWindow`, and an optional `metered` flag. `metered` is set to
 `true` only on the `anthropic:` entries; it is left **undefined** on the
 Gemini entries because that key's billing status has not been measured,
-and the Studio only marks an entry as metered when the flag is explicitly
+and the Nova app's model pickers only mark an entry as metered when the flag is explicitly
 true.
 
 `DEFAULT_MODEL` is `claude-cli:claude-haiku-4-5-20251001` — a
