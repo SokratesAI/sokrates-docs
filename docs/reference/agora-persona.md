@@ -13,8 +13,8 @@ it in all of them.
 
 - **Stored as**: one JSON file per record, under `personas/` in Agora's
   data volume.
-- **Created via**: Studio → **Personas** → **New persona**, or
-  `POST /personas`.
+- **Created via**: `POST /personas`. Agora's web front end, the Studio,
+  was removed in agora#80, so the API is the only way in.
 
 ## Fields
 

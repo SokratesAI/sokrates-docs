@@ -81,8 +81,8 @@ clears the flag.
 Agora listens on two ports with two different Express apps, and the split
 is a security boundary rather than a routing convenience.
 
-- **Public app**, `PORT`, default `8080` — the Studio UI and everything a
-  browser needs. It is what the Tailscale Ingress exposes.
+- **Public app**, `PORT`, default `8080` — the public API. It used to serve
+  the Studio UI too, which was removed in agora#80. It is what the Tailscale Ingress exposes.
 - **Internal app**, `INTERNAL_PORT`, default `8081` — the agent surface,
   cluster-internal only, and guarded by a shared token supplied as the
   `x-agora-token` header. This is the port the runner uses.
