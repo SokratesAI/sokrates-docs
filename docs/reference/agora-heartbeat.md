@@ -16,8 +16,8 @@ the persona it names.
 
 - **Stored as**: one JSON file per record, under `heartbeats/` in Agora's
   data volume.
-- **Created via**: Studio → **Heartbeats** → **New heartbeat**, or
-  `POST /heartbeats`.
+- **Created via**: `POST /heartbeats`. Agora's web front end, the Studio,
+  was removed in agora#80, so the API is the only way in.
 
 ## Fields
 

@@ -12,4 +12,4 @@ convey facts — see [Diátaxis: Tutorials](https://diataxis.fr/tutorials/).
 
 - **[Give an agent a recurring job](/tutorials/scheduled-agent)** — build a
   persona, give it a conversation and a schedule, and watch it fire. Ten
-  minutes, browser only.
+  minutes, one `curl` per step.
