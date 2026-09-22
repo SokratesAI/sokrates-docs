@@ -6,9 +6,9 @@ sidebar_position: 1.5
 
 # What the platform is made of
 
-This page is the map. It names every part of the Sokrates platform, says what each one is for, and shows how they connect. Start here, then read the other explanation pages for the parts you want to understand in depth.
+This page is the map. It names the parts of the Sokrates platform you will meet, says what each one is for, and shows how they connect. Start here, then read the other explanation pages for the parts you want to understand in depth.
 
-Everything below was read off the live cluster on 2026-09-22. Names and counts change; the shape changes much more slowly.
+The parts, machines and disks below were read off the live cluster on 2026-09-22. Names and counts change; the shape changes much more slowly.
 
 ## The whole thing in one picture
 
@@ -64,7 +64,7 @@ Read it left to right: you open an app on your phone, the app talks to Agora and
 | Sokrates Post (`sokrates-post`) | The new news app. It still passes some requests to the old one, `newspaper`, while it is being rebuilt. |
 | These docs (`sokrates-docs`) | This site. |
 
-Every one of them is reached through **Tailscale**, your private network. None is on the public internet. A small Tailscale proxy pod per app gives it a `*.tailc83eb3.ts.net` name.
+Every one of them sits behind **Tailscale**, your private network; the cluster has no public ingress for them. A small Tailscale proxy pod per app gives it a `*.tailc83eb3.ts.net` name.
 
 ### Where the agents live
 
@@ -117,11 +117,12 @@ These run so that the parts above can. You rarely need to think about them.
 | Sealed Secrets | Lets passwords live in git encrypted; only the cluster can decrypt them. |
 | Tailscale operator | Gives each app its private `ts.net` name. |
 | Traefik | Routes web requests inside the cluster. |
+| vault-bridge | A service that works on the vault in CouchDB. The old `newspaper` app runs from the same image. |
 | system-upgrade-controller | Upgrades k3s on both servers from a plan in git. |
 | Prometheus, Grafana, Tempo | Collect and show metrics and traces. |
 | telegram-bridge | Your Telegram bot. |
 | Backup jobs | The vault is copied to the `SokratesAI/vault` repo on GitHub as readable markdown every hour; Agora, Marcus and the bridge have their own backup jobs. |
-| nova-alive-ping | Proves every five minutes, to GitHub, that the cluster is alive, so a check off the box can notice when it stops. |
+| nova-alive-ping | Pushes a timestamp to GitHub every five minutes, as a sign the cluster is alive. |
 
 ## Where to go next
 
