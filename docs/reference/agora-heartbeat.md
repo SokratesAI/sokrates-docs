@@ -34,7 +34,7 @@ the persona it names.
 | `enabled` | boolean | `true` | Disabled heartbeats are never evaluated. |
 | `forceRun` | boolean | `false` | What "Run now" sets. The runner performs the turn on its next poll and clears the flag. |
 | `lastRunAt` | string \| null | `null` | ISO 8601. The runner evaluates the schedule from this field alone. |
-| `lastResult` | string \| null | `null` | One status line written back by the runner — `"replied 214 chars"`, `"failed: ..."` — shown in the Studio list. |
+| `lastResult` | string \| null | `null` | One status line written back by the runner — `"replied 214 chars"`, `"failed: ..."` — shown on the Nova app's Heartbeats page. |
 | `rotateConversationEachRun` | boolean | unset (off) | Workflow mode only. Creates a fresh conversation each cycle, carries the persona list forward, re-points the heartbeat, and archives older cycle-conversations. Keeps a verbose per-cycle transcript bounded. |
 | `conversationRetention` | number | `5` | How many rotated conversations stay active; older ones are **archived, not deleted**. Only meaningful with `rotateConversationEachRun`. |
 | `createdAt` | string | generated | ISO 8601. |
@@ -137,7 +137,7 @@ the record is written back unchanged, and you get
 The call reports success and changes nothing.
 
 To actually change a heartbeat's configuration, use the **public** app's
-route, or the Studio. This route has no capability gate on purpose — it is
+route. This route has no capability gate on purpose — it is
 the engine's own bookkeeping, not a persona-callable tool.
 :::
 

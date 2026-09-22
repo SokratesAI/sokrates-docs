@@ -69,11 +69,12 @@ runner:
 3. Calls the provider named by the persona's `model` field.
 4. Writes the reply into the conversation as a normal message, and writes
    a one-line status back onto the heartbeat's `lastResult` (`"replied 214
-   chars"`, `"failed: ..."`) so the Studio list shows what happened without
-   opening the thread.
+   chars"`, `"failed: ..."`) so the Heartbeats page in the Nova app shows what
+   happened without opening the thread.
 
-"Run now" in the Studio does not bypass any of this. It sets `forceRun` on
-the heartbeat; the runner performs the same turn on its next poll and
+"Run now" — `POST /heartbeats/:id/run` on the public app, which is what the
+Nova app's Heartbeats page calls — does not bypass any of this. It sets
+`forceRun` on the heartbeat; the runner performs the same turn on its next poll and
 clears the flag.
 
 ## Two front doors, on purpose
@@ -152,16 +153,14 @@ subscription path never costs you a model — only a provider prefix. This
 is why the model catalog carries an explicit `metered` flag rather than
 leaving people to infer it from a label: the metered entries have the
 plainer names, and the free ones carry the technical `(CLI)` suffix, so
-the raw labels point the wrong way from the billing. The Studio's picker
-compensates by grouping options per provider — **Anthropic API (metered —
-costs money)** against **Claude (subscription)** — and appending
-`— metered` to each paid entry's own text as well, since a collapsed
-`<select>` shows the option alone and hides the group heading.
+the raw labels point the wrong way from the billing. The Nova app's model
+pickers compensate by appending `(metered)` to each paid entry's own label,
+since a collapsed `<select>` shows the option alone.
 
 The flag is left *undefined* on the Gemini entries rather than set to
 false. That is not an oversight. Nobody has measured whether that key is
 billed, and recording a guess of "free" is precisely the mistake the field
-exists to prevent. The Studio only marks an entry as metered when it is
+exists to prevent. The Nova app only marks an entry as metered when it is
 known to be.
 
 Anything scheduled — a heartbeat, a workflow — is where metered billing
