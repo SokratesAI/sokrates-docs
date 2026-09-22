@@ -13,27 +13,16 @@ The parts, machines and disks below were read off the live cluster on 2026-09-22
 ## The whole thing in one picture
 
 ```mermaid
-flowchart LR
-    phone["Your phone<br/>(browser, on the tailnet)"]
-
-    subgraph apps ["Apps you open"]
-        nova["Nova app<br/>nova-site"]
-        marcus["Marcus<br/>training coach"]
-        lyceum["Lyceum<br/>learning app"]
-        post["Sokrates Post<br/>news"]
-        docs["These docs<br/>sokrates-docs"]
-    end
-
-    subgraph brain ["Where the agents live"]
-        agora["Agora<br/>personas, chats,<br/>schedules"]
-        runner["agora-persona-runner<br/>does each turn"]
-        bridge["agora-claude-bridge<br/>runs Claude Code"]
-    end
-
+flowchart TD
+    phone["Your phone"]
+    apps["Apps you open<br/>Nova app, Marcus, Lyceum,<br/>Sokrates Post, these docs"]
+    obsidian["Obsidian"]
+    agora["Agora<br/>personas, chats, schedules"]
+    runner["agora-persona-runner<br/>does each turn"]
+    bridge["agora-claude-bridge<br/>runs Claude Code"]
     couch[("CouchDB<br/>vault + app databases")]
-    obsidian["Obsidian on<br/>your devices"]
-    github["GitHub<br/>SokratesAI repos"]
-    argo["ArgoCD<br/>keeps the cluster<br/>matching git"]
+    github["GitHub"]
+    argo["ArgoCD<br/>deploys what git says"]
 
     phone -->|Tailscale| apps
     phone -->|Tailscale| obsidian
@@ -41,16 +30,14 @@ flowchart LR
     apps --> agora
     apps --> couch
     agora <--> runner
-    runner -->|claude-cli turns| bridge
-    runner --> couch
+    runner -->|Claude turns| bridge
     bridge --> couch
     bridge -->|pull requests| github
     github --> argo
-    argo -->|deploys| apps
-    argo -->|deploys| brain
+    argo -.->|deploys everything| apps
 ```
 
-Read it left to right: you open an app on your phone, the app talks to Agora and to the database, Agora hands a turn to the runner, the runner hands Claude turns to the bridge, and the bridge is also where the agents' code changes leave for GitHub. GitHub is the only way new code reaches the cluster: ArgoCD watches it and deploys whatever it says.
+Read it top to bottom: you open an app on your phone, the app talks to Agora and to the database, Agora hands a turn to the runner, the runner hands Claude turns to the bridge, and the bridge is also where the agents' code changes leave for GitHub. GitHub is the only way new code reaches the cluster: ArgoCD watches it and deploys whatever it says.
 
 ## The parts, one line each
 
@@ -95,7 +82,7 @@ Most programs can move to the other machine if one goes down. A program whose di
 ## How a change reaches your phone
 
 ```mermaid
-flowchart LR
+flowchart TD
     pr["Pull request<br/>merged on GitHub"] --> ci["GitHub Actions<br/>builds an image"]
     ci --> cfg["The app's -config repo<br/>gets the new image"]
     cfg --> argo["ArgoCD notices<br/>and deploys it"]
