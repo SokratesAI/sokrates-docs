@@ -10,6 +10,9 @@ Understanding-oriented discussion — why the platform is built the way it
 is, architectural trade-offs, background. See
 [Diátaxis: Explanation](https://diataxis.fr/explanation/).
 
+- **[What the platform is made of](/explanation/platform-map)** — the map:
+  every part, what it is for, which machine it lives on, and how a change
+  reaches your phone. Start here.
 - **[How Agora runs an agent](/explanation/agora)** — why persona,
   conversation and heartbeat are three records, and what happens between a
   schedule firing and a reply appearing.
