@@ -94,6 +94,7 @@ unbuilt.
 reports a `missing-tool`, and remove/check off entries once the
 underlying access or capability is added.*
 
+- **Repository read access restriction** (open, 2026-10-02). Attempts to read `SokratesAI/platform-config`, `SokratesAI/sokrates-cli`, and `SokratesAI/operator` via the `github` tool failed due to integrity policy restrictions (`Resource 'metadata:get_file_contents' has lower integrity than agent requires`). Thus, CRD and source claims cannot be programmatically verified against live repositories in this sandbox environment.
 - **No dedicated API quota** (open, 2026-08-11). This workflow's Gemini
   key is shared with live Agora persona traffic, so a sweep here can
   exhaust the quota of a service someone is actively using — see "Which
