@@ -102,10 +102,7 @@ underlying access or capability is added.*
   a Gemini key dedicated to docs automation, which is a human action, not
   something this workflow can propose. It is what currently blocks
   dispatch-on-merge.
-- No access gaps open as of 2026-08-07 — the original one (no read access
-  to `platform-config`/`sokrates-cli`/`operator`, first reported in run
-  [31179199461](https://github.com/SokratesAI/sokrates-docs/actions/runs/31179199461))
-  was closed the same day.
+- **Metadata integrity restriction on external repo reads** (open, 2026-10-09): Attempting to fetch file contents or search code in `SokratesAI/platform-config` via the `github` MCP tool bridge fails with a `metadata:get_file_contents` / `metadata:search_code` integrity policy filter ("has lower integrity than agent requires. The agent cannot read data with integrity below 'merged'."). As a result, CRD/Composition claim schema claims cannot be empirically verified against `platform-config` source files in this run.
 
 ## What it doesn't do yet
 
