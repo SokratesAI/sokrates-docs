@@ -102,10 +102,7 @@ underlying access or capability is added.*
   a Gemini key dedicated to docs automation, which is a human action, not
   something this workflow can propose. It is what currently blocks
   dispatch-on-merge.
-- No access gaps open as of 2026-08-07 — the original one (no read access
-  to `platform-config`/`sokrates-cli`/`operator`, first reported in run
-  [31179199461](https://github.com/SokratesAI/sokrates-docs/actions/runs/31179199461))
-  was closed the same day.
+- **`platform-config` read access filtered by integrity policy** (open, 2026-10-30). Although the `github` bridge tool is available on `PATH`, calls to `get_file_contents` for `SokratesAI/platform-config` (e.g. `crossplane/githubservice-xrd.yaml` and `crossplane/githubservice-composition.yaml`) are filtered out by sandbox integrity policy (`Resource metadata:get_file_contents has lower integrity than agent requires`). Consequently, verification of `GitHubService` claims against real live schema sources cannot be completed via the tool bridge in this environment.
 
 ## What it doesn't do yet
 
