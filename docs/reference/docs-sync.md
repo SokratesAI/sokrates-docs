@@ -94,6 +94,7 @@ unbuilt.
 reports a `missing-tool`, and remove/check off entries once the
 underlying access or capability is added.*
 
+- **`SokratesAI/platform-config` repository read access restricted by integrity policy** (open, 2026-11-06). Attempts to read `crossplane/githubservice-xrd.yaml` and `crossplane/githubservice-composition.yaml` via the `github` tool are filtered by integrity policy ("Resource has lower integrity than agent requires. The agent cannot read data with integrity below 'merged'"). This prevents verification of `docs/reference/github-service.md` against real source files in this run.
 - **No dedicated API quota** (open, 2026-08-11). This workflow's Gemini
   key is shared with live Agora persona traffic, so a sweep here can
   exhaust the quota of a service someone is actively using — see "Which
